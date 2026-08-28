@@ -1,1 +1,40 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <title>ことば検索</title>
+</head>
+
+<body>
+
+  <h1>ことば検索</h1>
+
+  <p>
+    練習したい音を入力してください。
+  </p>
+
+  <input
+    id="soundInput"
+    type="text"
+    placeholder="例：ツ、ス"
+  >
+
+  <button id="searchButton">
+    ことばを探す
+  </button>
+
+  <h2>語頭</h2>
+  <div id="startResults"></div>
+
+  <h2>語中</h2>
+  <div id="middleResults"></div>
+
+  <h2>語尾</h2>
+  <div id="endResults"></div>
+
+  <script src="script.js"></script>
+
+</body>
+</html>
