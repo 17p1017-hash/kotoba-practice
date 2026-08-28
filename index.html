@@ -1,23 +1,52 @@
-<h2>ふつうのことば</h2>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ことば検索</title>
+</head>
 
-<h3>語頭</h3>
-<div id="wordStartResults"></div>
+<body>
 
-<h3>語中</h3>
-<div id="wordMiddleResults"></div>
+  <h1>ことば検索</h1>
 
-<h3>語尾</h3>
-<div id="wordEndResults"></div>
+  <p>練習したい音を入力してください。</p>
 
-<hr>
+  <input
+    type="text"
+    id="soundInput"
+    placeholder="例：つ、す、か"
+  >
 
-<h2>ポケモン</h2>
+  <button id="searchButton">
+    ことばを探す
+  </button>
 
-<h3>語頭</h3>
-<div id="pokemonStartResults"></div>
+  <h2>ふつうのことば</h2>
 
-<h3>語中</h3>
-<div id="pokemonMiddleResults"></div>
+  <h3>語頭</h3>
+  <div id="wordStartResults"></div>
 
-<h3>語尾</h3>
-<div id="pokemonEndResults"></div>
+  <h3>語中</h3>
+  <div id="wordMiddleResults"></div>
+
+  <h3>語尾</h3>
+  <div id="wordEndResults"></div>
+
+  <hr>
+
+  <h2>ポケモン</h2>
+
+  <h3>語頭</h3>
+  <div id="pokemonStartResults"></div>
+
+  <h3>語中</h3>
+  <div id="pokemonMiddleResults"></div>
+
+  <h3>語尾</h3>
+  <div id="pokemonEndResults"></div>
+
+  <script src="script.js"></script>
+
+</body>
+</html>
