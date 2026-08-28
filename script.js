@@ -241,6 +241,7 @@ function showWordResults(element, results) {
 
 // ====================
 // ポケモン表示
+// 画像 + 図鑑番号 + 公式ずかんリンク
 // ====================
 
 function showPokemonResults(element, results) {
@@ -253,6 +254,27 @@ function showPokemonResults(element, results) {
 
   results.forEach(function (pokemonData) {
 
+    const numberText =
+      String(pokemonData.number).padStart(4, "0");
+
+
+    // 公式ずかんへのリンク
+    const link =
+      document.createElement("a");
+
+    link.href =
+      "https://zukan.pokemon.co.jp/detail/" +
+      numberText;
+
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+
+    link.style.display = "block";
+    link.style.textDecoration = "none";
+    link.style.color = "inherit";
+
+
+    // カード
     const card =
       document.createElement("div");
 
@@ -263,8 +285,12 @@ function showPokemonResults(element, results) {
     card.style.borderRadius = "16px";
     card.style.padding = "10px";
     card.style.marginBottom = "10px";
+    card.style.cursor = "pointer";
+    card.style.boxShadow =
+      "0 2px 8px rgba(0, 0, 0, 0.06)";
 
 
+    // ポケモン画像
     const image =
       document.createElement("img");
 
@@ -277,14 +303,15 @@ function showPokemonResults(element, results) {
 
     image.width = 80;
     image.height = 80;
-
     image.loading = "lazy";
 
 
+    // 文字部分
     const text =
       document.createElement("div");
 
 
+    // 名前
     const name =
       document.createElement("div");
 
@@ -295,25 +322,40 @@ function showPokemonResults(element, results) {
     name.style.fontWeight = "bold";
 
 
+    // 図鑑番号
     const number =
       document.createElement("div");
 
     number.textContent =
-      "No." +
-      String(pokemonData.number)
-        .padStart(4, "0");
+      "No." + numberText;
 
     number.style.fontSize = "13px";
     number.style.color = "#888";
+    number.style.marginTop = "3px";
+
+
+    // 公式ずかん案内
+    const guide =
+      document.createElement("div");
+
+    guide.textContent =
+      "公式ポケモンずかんを見る →";
+
+    guide.style.fontSize = "13px";
+    guide.style.marginTop = "5px";
+    guide.style.color = "#7d6aac";
 
 
     text.appendChild(name);
     text.appendChild(number);
+    text.appendChild(guide);
 
     card.appendChild(image);
     card.appendChild(text);
 
-    element.appendChild(card);
+    link.appendChild(card);
+
+    element.appendChild(link);
   });
 }
 
