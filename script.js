@@ -4,16 +4,27 @@ let pokemon = [];
 const soundInput = document.getElementById("soundInput");
 const searchButton = document.getElementById("searchButton");
 
-const startResults = document.getElementById("startResults");
-const middleResults = document.getElementById("middleResults");
-const endResults = document.getElementById("endResults");
+const wordStartResults =
+  document.getElementById("wordStartResults");
+const wordMiddleResults =
+  document.getElementById("wordMiddleResults");
+const wordEndResults =
+  document.getElementById("wordEndResults");
+
+const pokemonStartResults =
+  document.getElementById("pokemonStartResults");
+const pokemonMiddleResults =
+  document.getElementById("pokemonMiddleResults");
+const pokemonEndResults =
+  document.getElementById("pokemonEndResults");
 
 async function loadData() {
   try {
-    const [wordsResponse, pokemonResponse] = await Promise.all([
-      fetch("./data/words.json"),
-      fetch("./data/pokemon.json")
-    ]);
+    const [wordsResponse, pokemonResponse] =
+      await Promise.all([
+        fetch("./data/words.json"),
+        fetch("./data/pokemon.json")
+      ]);
 
     if (!wordsResponse.ok) {
       throw new Error("words.jsonを読み込めませんでした");
@@ -26,11 +37,12 @@ async function loadData() {
     words = await wordsResponse.json();
     pokemon = await pokemonResponse.json();
 
-    console.log("一般語:", words.length);
+    console.log("ふつうのことば:", words.length);
     console.log("ポケモン:", pokemon.length);
+
   } catch (error) {
     console.error(error);
-    alert("単語データの読み込みに失敗しました");
+    alert("ことばデータの読み込みに失敗しました");
   }
 }
 
@@ -47,9 +59,7 @@ soundInput.addEventListener("keydown", function (event) {
 function searchWords() {
   const rawSound = soundInput.value.trim();
 
-  startResults.innerHTML = "";
-  middleResults.innerHTML = "";
-  endResults.innerHTML = "";
+  clearResults();
 
   if (rawSound === "") {
     alert("練習したい音を入力してください");
@@ -58,49 +68,75 @@ function searchWords() {
 
   const sound = normalizeKana(rawSound);
 
-  const allItems = [
-    ...words.map(function (word) {
-      return {
-        name: word,
-        type: "ことば"
-      };
-    }),
+  // ふつうのことば
+  const wordResults = classifyWords(words, sound);
 
-    ...pokemon.map(function (name) {
-      return {
-        name: name,
-        type: "ポケモン"
-      };
-    })
-  ];
+  showResults(
+    wordStartResults,
+    wordResults.start
+  );
 
+  showResults(
+    wordMiddleResults,
+    wordResults.middle
+  );
+
+  showResults(
+    wordEndResults,
+    wordResults.end
+  );
+
+  // ポケモン
+  const pokemonResults =
+    classifyWords(pokemon, sound);
+
+  showResults(
+    pokemonStartResults,
+    pokemonResults.start
+  );
+
+  showResults(
+    pokemonMiddleResults,
+    pokemonResults.middle
+  );
+
+  showResults(
+    pokemonEndResults,
+    pokemonResults.end
+  );
+}
+
+function classifyWords(list, sound) {
   const start = [];
   const middle = [];
   const end = [];
 
-  allItems.forEach(function (item) {
-    const normalizedWord = normalizeKana(item.name);
+  list.forEach(function (word) {
+    const normalizedWord =
+      normalizeKana(word);
 
     if (!normalizedWord.includes(sound)) {
       return;
     }
 
     if (normalizedWord.startsWith(sound)) {
-      start.push(item);
+      start.push(word);
       return;
     }
 
     if (normalizedWord.endsWith(sound)) {
-      end.push(item);
+      end.push(word);
       return;
     }
 
-    middle.push(item);
+    middle.push(word);
   });
 
-  showResults(startResults, start);
-  showResults(middleResults, middle);
-  showResults(endResults, end);
+  return {
+    start,
+    middle,
+    end
+  };
 }
 
 function showResults(element, results) {
@@ -109,25 +145,32 @@ function showResults(element, results) {
     return;
   }
 
-  results.forEach(function (item) {
+  results.forEach(function (word) {
     const p = document.createElement("p");
-
-    if (item.type === "ポケモン") {
-      p.textContent = item.name + "　【ポケモン】";
-    } else {
-      p.textContent = item.name;
-    }
-
+    p.textContent = word;
     element.appendChild(p);
   });
+}
+
+function clearResults() {
+  wordStartResults.innerHTML = "";
+  wordMiddleResults.innerHTML = "";
+  wordEndResults.innerHTML = "";
+
+  pokemonStartResults.innerHTML = "";
+  pokemonMiddleResults.innerHTML = "";
+  pokemonEndResults.innerHTML = "";
 }
 
 function normalizeKana(text) {
   return text
     .normalize("NFKC")
-    .replace(/[\u30a1-\u30f6]/g, function (match) {
-      return String.fromCharCode(
-        match.charCodeAt(0) - 0x60
-      );
-    });
+    .replace(
+      /[\u30a1-\u30f6]/g,
+      function (match) {
+        return String.fromCharCode(
+          match.charCodeAt(0) - 0x60
+        );
+      }
+    );
 }
