@@ -28,27 +28,28 @@
 
     .message {
       text-align: center;
-      margin-bottom: 24px;
       color: #777;
+      margin-bottom: 24px;
     }
 
     .search-box {
       background: white;
       padding: 20px;
-      border-radius: 20px;
+      border-radius: 22px;
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
-      margin-bottom: 28px;
+      margin-bottom: 22px;
     }
 
-    .search-row {
-      display: flex;
-      gap: 10px;
+    .label {
+      font-weight: bold;
+      margin-bottom: 10px;
+      display: block;
     }
 
     input {
-      flex: 1;
-      min-width: 0;
-      font-size: 20px;
+      box-sizing: border-box;
+      width: 100%;
+      font-size: 22px;
       padding: 14px 16px;
       border: 2px solid #eadfd7;
       border-radius: 14px;
@@ -60,19 +61,49 @@
       border-color: #e8b9a8;
     }
 
-    button {
-      font-size: 16px;
+    .choice-title {
+      text-align: center;
+      margin: 24px 0 14px;
       font-weight: bold;
-      padding: 12px 18px;
-      border: none;
-      border-radius: 14px;
-      background: #f2b8a0;
-      color: #4b342b;
-      cursor: pointer;
+      font-size: 18px;
     }
 
-    button:active {
+    .choice-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .choice-button {
+      min-height: 70px;
+      border: none;
+      border-radius: 18px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      padding: 12px;
+    }
+
+    .word-button {
+      background: #dff3e5;
+      color: #496c57;
+    }
+
+    .pokemon-button {
+      background: #eee8fa;
+      color: #67558d;
+    }
+
+    .choice-button:active {
       transform: scale(0.98);
+    }
+
+    .results {
+      display: none;
+    }
+
+    .results.show {
+      display: block;
     }
 
     .section {
@@ -85,16 +116,8 @@
 
     .section-title {
       margin-top: 0;
-      font-size: 24px;
       text-align: center;
-    }
-
-    .word-title {
-      color: #5f8f74;
-    }
-
-    .pokemon-title {
-      color: #7d6aac;
+      font-size: 25px;
     }
 
     .result-group {
@@ -111,19 +134,14 @@
 
     .result-group p {
       margin: 7px 0;
-      padding: 8px 10px;
+      padding: 9px 10px;
       background: white;
       border-radius: 10px;
     }
 
-    @media (max-width: 520px) {
-      .search-row {
-        flex-direction: column;
-      }
-
-      button {
-        width: 100%;
-        padding: 14px;
+    @media (max-width: 480px) {
+      .choice-buttons {
+        grid-template-columns: 1fr;
       }
 
       h1 {
@@ -140,66 +158,88 @@
     <h1>ことば検索</h1>
 
     <p class="message">
-      練習したい音を入力してください
+      練習したい音を入力して、探したい種類を選んでください
     </p>
 
     <div class="search-box">
-      <div class="search-row">
-        <input
-          type="text"
-          id="soundInput"
-          placeholder="例：つ、す、か"
-        >
 
-        <button id="searchButton">
-          ことばを探す
-        </button>
+      <label class="label" for="soundInput">
+        練習したい音
+      </label>
+
+      <input
+        type="text"
+        id="soundInput"
+        placeholder="例：つ、す、か"
+      >
+
+      <div class="choice-title">
+        どっちで探す？
       </div>
+
+      <div class="choice-buttons">
+
+        <button
+          id="wordSearchButton"
+          class="choice-button word-button"
+        >
+          🌱 ふつうのことば
+        </button>
+
+        <button
+          id="pokemonSearchButton"
+          class="choice-button pokemon-button"
+        >
+          ⭐ ポケモン
+        </button>
+
+      </div>
+
     </div>
 
 
-    <div class="section">
+    <div id="wordResultsSection" class="results section">
 
-      <h2 class="section-title word-title">
-        ふつうのことば
+      <h2 class="section-title">
+        🌱 ふつうのことば
       </h2>
 
       <div class="result-group">
-        <h3>🌱 語頭</h3>
+        <h3>語頭</h3>
         <div id="wordStartResults"></div>
       </div>
 
       <div class="result-group">
-        <h3>🌼 語中</h3>
+        <h3>語中</h3>
         <div id="wordMiddleResults"></div>
       </div>
 
       <div class="result-group">
-        <h3>🍀 語尾</h3>
+        <h3>語尾</h3>
         <div id="wordEndResults"></div>
       </div>
 
     </div>
 
 
-    <div class="section">
+    <div id="pokemonResultsSection" class="results section">
 
-      <h2 class="section-title pokemon-title">
-        ポケモン
+      <h2 class="section-title">
+        ⭐ ポケモン
       </h2>
 
       <div class="result-group">
-        <h3>⭐ 語頭</h3>
+        <h3>語頭</h3>
         <div id="pokemonStartResults"></div>
       </div>
 
       <div class="result-group">
-        <h3>💫 語中</h3>
+        <h3>語中</h3>
         <div id="pokemonMiddleResults"></div>
       </div>
 
       <div class="result-group">
-        <h3>✨ 語尾</h3>
+        <h3>語尾</h3>
         <div id="pokemonEndResults"></div>
       </div>
 
