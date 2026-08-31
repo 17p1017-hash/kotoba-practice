@@ -2,336 +2,403 @@
   {
     "name": "ドスジャグラス",
     "reading": "どすじゃぐらす",
-    "slug": "greatjagras"
+    "slug": "great-jagras",
+    "image": "https://lh3.googleusercontent.com/SboNuJBHMHvZagM5e9gZtcRu5dOrncXyvlR4AyUSHWHZnWfAA-7pWpTBA5LoYQ0iQD5HvE8-Sy1b-D7UKeKrKvj6ush2EMPFJNmz%3Ds0-e365"
   },
   {
     "name": "クルルヤック",
     "reading": "くるるやっく",
-    "slug": "kuluyaku"
+    "slug": "kulu-ya-ku",
+    "image": "https://lh3.googleusercontent.com/lAwIHQNltYFxsgRIl3QQqKyuqBVmlksTcXGsEGtlsiGgjFZLUenCvyJstLAcT6Qp6DSQOcK2d0xhwn8h7OPYDJiHvQN1c0fIF6as%3Ds0-e365"
   },
   {
     "name": "プケプケ",
     "reading": "ぷけぷけ",
-    "slug": "pukeipukei"
+    "slug": "pukei-pukei",
+    "image": "https://lh3.googleusercontent.com/uItIg4CzLUTNvxKJSxd64bwG2eR00q-jqzPCqBw2kVW3HJsmDE5bym_BxbgEU6U7CiJfqPvQLuVMvQVFvpA5VnUgNeougaCZqLgB%3Ds0-e365"
   },
   {
     "name": "プケプケ亜種",
     "reading": "ぷけぷけあしゅ",
-    "slug": "coralpukeipukei"
+    "slug": "coralpukeipukei",
+    "image": "https://lh3.googleusercontent.com/XTWU-qee_GdKw-cscXOYCMa4rCxyx_18D7oPKUR3AtqKT32eI3lNffCzcc_Ep6FvGs4hnamxe3SIc_AVt-OhYpyXX7Qm8N76bJZb%3Ds0-e365"
   },
   {
     "name": "ボルボロス",
     "reading": "ぼるぼろす",
-    "slug": "barroth"
+    "slug": "barroth",
+    "image": "https://lh3.googleusercontent.com/O-wvuuIdWloThvVoNaWhzuRs8lVNg1-IAhvJ4vDftilHoAgCjt3tfVXqPiGiVq3GH0cEecz7hSCk9BF-GpZ6RpKcd4GBu2pdmAE%3Ds0-e365"
   },
   {
     "name": "ドスギルオス",
     "reading": "どすぎるおす",
-    "slug": "greatgirros"
+    "slug": "great-girros",
+    "image": "https://lh3.googleusercontent.com/aLQ4Re_h6Ve4ZMt2H4OM64VeTB4Ac87J4POgUP8kEVpDIZkgHMkhqrhv3PcMLBLyoR-EwxgUYbNBhzsqBVDpAWYbZvSgShy6KEw%3Ds0-e365"
   },
   {
     "name": "トビカガチ",
     "reading": "とびかがち",
-    "slug": "tobikadachi"
+    "slug": "tobi-kadachi",
+    "image": "https://lh3.googleusercontent.com/T3aQOBdg-d8uYD_OAqg1lrgVZrXTWcQwOMrBhUC_1ZrKKRy5E8bOmk_XAAwoU3k-pJAg_BnsLItRY8HEKknP7v3iGngjcg1AxVAc%3Ds0-e365"
   },
   {
     "name": "トビカガチ亜種",
     "reading": "とびかがちあしゅ",
-    "slug": "vipertobikadachi"
+    "slug": "vipertobikadachi",
+    "image": "https://lh3.googleusercontent.com/-58LShlYOHgctMxJj4bkVq74hI0MfmsvKYAejR727oKFPhgUr7Ul4IITTl3J_8JRXfPaFB5_f2YPICww2E9tCJrlmeCORd7SL84%3Ds0-e365"
   },
   {
     "name": "パオウルムー",
     "reading": "ぱおうるむー",
-    "slug": "paolumu"
+    "slug": "paolumu",
+    "image": "https://lh3.googleusercontent.com/r29RK-hYn7wuegWMg7Y5n1cnSrh0E0w02zLenPKte-3PcLBhCP7Exb7wK0rcXK_TlgbT10vomQqlNtJvEASvKHfmwTSwL80eylw%3Ds0-e365"
   },
   {
     "name": "パオウルムー亜種",
     "reading": "ぱおうるむーあしゅ",
-    "slug": "nightshadepaolumu"
+    "slug": "nightshadepaolumu",
+    "image": "https://lh3.googleusercontent.com/dKEnHe-jrE51b-Orec14t3NmElFJpxOJB_1fNDM3y58Uef27groBIu2Nm8yYtQ2I4TkktFvoUdeDmNqfrqNQ0mEEmF1u0ZhU6sw%3Ds0-e365"
   },
   {
     "name": "ジュラトドス",
     "reading": "じゅらとどす",
-    "slug": "jyuratodus"
+    "slug": "jyuratodus",
+    "image": "https://lh3.googleusercontent.com/Lv-Ac1_HmZTTjW0XeXwRhQjGToD1_hsW_vL6kbXihctZdhKEq7qzbESptted-RoCl1tGSTwYqQut0iCzEK-7O88jIdhY62fPXLc%3Ds0-e365"
   },
   {
     "name": "アンジャナフ",
     "reading": "あんじゃなふ",
-    "slug": "anjanath"
+    "slug": "anjanath",
+    "image": "https://lh3.googleusercontent.com/nAsTfxAR-ts-AhZbkq7dRSJNX67n1TmKl8QBCpcQNHsWB1z7Eo1PwRIS6oQRCxD1_aJwWkgScugXmrbioGxoTnwTK2k0QtJf9So%3Ds0-e365"
   },
   {
     "name": "アンジャナフ亜種",
     "reading": "あんじゃなふあしゅ",
-    "slug": "fulguranjanath"
+    "slug": "fulguranjanath",
+    "image": "https://lh3.googleusercontent.com/tbbvtwTBt8trB1Ac449j_aMorkgFpD5fgh7F8MbegFktpLNLuVHOT_LSucMp6xwdbFhYPXR3FcaJsgcijgDU3gF0wepi29ZuMls%3Ds0-e365"
   },
   {
     "name": "リオレイア",
     "reading": "りおれいあ",
-    "slug": "rathian"
+    "slug": "rathian",
+    "image": "https://lh3.googleusercontent.com/d_DsdKJr1ICOh1WDMi0A93Dlsc_uMgr4zWe5pT6MmVeHIdMWfuqNnqIZqJnjrBMRxezHvwHKPCLYYYCRYIpYKyh92ZDP9Jy_COE%3Ds0-e365"
   },
   {
     "name": "リオレイア亜種",
     "reading": "りおれいああしゅ",
-    "slug": "pinkrathian"
+    "slug": "pinkrathian",
+    "image": "https://lh3.googleusercontent.com/0azaJ3avV8Y0GNYA3EGBiNfPsMw3QhYvW9Q598fiCrkAAksXPP_sPXiTeEVZXy63XB3mD79uVLltgJMrpWhhUhuVPN8m8BEfSZ4%3Ds0-e365"
   },
   {
     "name": "リオレイア希少種",
     "reading": "りおれいあきしょうしゅ",
-    "slug": "goldrathian"
+    "slug": "goldrathian",
+    "image": "https://lh3.googleusercontent.com/2FFcBaoFZZxB8SgIXWcAqXwDBDO_DY-9sPD5EjvSpn_tjceRonO0rNoaQd3sE1mx_s20KZiGjs4MZ5MiYOWq797EFRN2Pw8Hgbw%3Ds0-e365"
   },
   {
     "name": "レイギエナ",
     "reading": "れいぎえな",
-    "slug": "legiana"
+    "slug": "legiana",
+    "image": "https://lh3.googleusercontent.com/4d9eanW6J99-y1-vzPUXDvm3z2MXVn8Y13Ob6Ci5ghTZV4W7BWFSgEyOHz1eD03ThiZO8QQR1b6bs2jWUBdbfx7UZvBt_U5P%3Ds0-e365"
   },
   {
     "name": "ディアブロス",
     "reading": "でぃあぶろす",
-    "slug": "diablos"
+    "slug": "diablos",
+    "image": "https://lh3.googleusercontent.com/PBjQpqyUph-SoRhPkoPSQ9jsedxrEoB0Nkwphi2nIvKjHC6oMq9uDuvl6_cClCGU-umcEoWr-j6lDrzGrkUlOMO-iXcE3xMHFZhd%3Ds0-e365"
   },
   {
     "name": "ディアブロス亜種",
     "reading": "でぃあぶろすあしゅ",
-    "slug": "blackdiablos"
+    "slug": "blackdiablos",
+    "image": "https://lh3.googleusercontent.com/EDg4Z_ID3fhNx67_8pH9bWk7Uvn7zPkDM1ZVmTrsKIVH3pIlVp0gETduSy3LiBJmMF5z4p83zsmrAEljetJp6K76EzJqW4vfyjQ%3Ds0-e365"
   },
   {
     "name": "リオレウス",
     "reading": "りおれうす",
-    "slug": "rathalos"
+    "slug": "rathalos",
+    "image": "https://lh3.googleusercontent.com/MZFRebXXH59TZlo1RKcjBFFQqLm74B5Xl8YzYao-1stOjA18LZq4GpkqbcxvpDe867W2f6vdeAQ9e8Qkso-YnWdEelbvBC4T9ts%3Ds0-e365"
   },
   {
     "name": "リオレウス亜種",
     "reading": "りおれうすあしゅ",
-    "slug": "azurerathalos"
+    "slug": "azurerathalos",
+    "image": "https://lh3.googleusercontent.com/guASgmIw5Zoy2OlXE4glR3x4Fk8fpwv4dzwisfeGOC8PBMHHH93htK124qi3ZDpKx16U78OGtJxVIyt5VIrY74pNYyPiHXgBrw%3Ds0-e365"
   },
   {
     "name": "リオレウス希少種",
     "reading": "りおれうすきしょうしゅ",
-    "slug": "silverrathalos"
+    "slug": "silverrathalos",
+    "image": "https://lh3.googleusercontent.com/xibqdE5K8G2sB7_Z264JkEW0ZqwGx1i5Q5fCNHO_G3ApMVTtFnLOZkaDThBPLQzYeVk8gE2AQq0tpCYaISHgnCVDRitX45muLYM%3Ds0-e365"
   },
   {
     "name": "ラドバルキン",
     "reading": "らどばるきん",
-    "slug": "radobaan"
+    "slug": "radobaan",
+    "image": "https://lh3.googleusercontent.com/L5Ppys957B0gQbrrLAOsSsAcqfyf1JseuN0QcrbippvntHyioFWYYO3zGuiKO2AbnXpA4_urcTxo30cFySfzLuEyDOtXZgItiw%3Ds0-e365"
   },
   {
     "name": "バフバロ",
     "reading": "ばふばろ",
-    "slug": "banbaro"
+    "slug": "banbaro",
+    "image": "https://lh3.googleusercontent.com/2Ot-MW4MTLt8C4JNrlgYvW0kBqyqtU_f7mE5PfRbxNeat_I-M4OIHU5FJRfcPZC-A7k1rEGlftFpVsUrMdcapaxTClGuraGSUg%3Ds0-e365"
   },
   {
     "name": "ベリオロス",
     "reading": "べりおろす",
-    "slug": "barioth"
+    "slug": "barioth",
+    "image": "https://lh3.googleusercontent.com/MWYlwpynXkNQMa70jUvaaBxYPIrIpHrcuGDOFO3qLHoCdK8h7OYEKLNjyxci3ltByEOt2Ln4J0HU0Oj2OobwwF4XAaJubjaztAg%3Ds0-e365"
   },
   {
     "name": "ジンオウガ",
     "reading": "じんおうが",
-    "slug": "zinogre"
+    "slug": "zinogre",
+    "image": "https://lh3.googleusercontent.com/iortlxoQunKy3UvPljk--IrEX58rmEBma8u5Oy5WDS_arTXfnW6sRjdlf10mFH9IUwdBG3q-03xSGEohp3cfc2HY_P88oa-wZQ%3Ds0-e365"
   },
   {
     "name": "ジンオウガ亜種",
     "reading": "じんおうがあしゅ",
-    "slug": "stygianzinogre"
+    "slug": "stygianzinogre",
+    "image": "https://lh3.googleusercontent.com/yftf_RNTk_4LiH70n9K2WvPy4owVZXTrp1c6G0cGI-lOVc6M2dWunMtRMQzwaKAOTa86zl_vvGQw9U_HygvphtKWEaGS58B_PpE%3Ds0-e365"
   },
   {
     "name": "ツィツィヤック",
     "reading": "つぃつぃやっく",
-    "slug": "tzitziyaku"
+    "slug": "tzitzi-ya-ku",
+    "image": "https://lh3.googleusercontent.com/NqPyrKj_l1bhgNnWthBshFvdA_1Dh4yAAX61DcCROVVds_ajNDkyevkPsf_ILqtTx9_CC_psR647ckWfO3OYmTub06ytV94t3Q%3Ds0-e365"
   },
   {
     "name": "オドガロン",
     "reading": "おどがろん",
-    "slug": "odogaron"
+    "slug": "odogaron",
+    "image": "https://lh3.googleusercontent.com/TTvPFozMLKw359vECqhWlOgF0HoguKe_upBtmTIWK2ZrE_EUTxHGyBFv_yiFY6TKWfxSpdaCKTELZM82hYRTypPAZgQ93aRMLj_P%3Ds0-e365"
   },
   {
     "name": "オドガロン亜種",
     "reading": "おどがろんあしゅ",
-    "slug": "ebonyodogaron"
+    "slug": "ebonyodogaron",
+    "image": "https://lh3.googleusercontent.com/Yo4WezFNSxk1yE0kdKd9_CDRTFtcDXNnhijsxk3AW4bDmV9YOYYPwpVEfg7fzKmQjyI5V6XQ5zrqYbwfUXWcOEXRh27fZxwIcxU-%3Ds0-e365"
   },
   {
     "name": "イビルジョー",
     "reading": "いびるじょー",
-    "slug": "deviljho"
+    "slug": "deviljho",
+    "image": "https://lh3.googleusercontent.com/5iMgUNLydrSD-OCZCMZOhNnpZTai9oSQbyWNR40xyTEbehgLV0vap4Z1M7ropL8adFiKxmil7ROFF4H5pqLGrfnWFu5LR_HMtbA%3Ds0-e365"
   },
   {
     "name": "バサルモス",
     "reading": "ばさるもす",
-    "slug": "basarios"
+    "slug": "basarios",
+    "image": "https://lh3.googleusercontent.com/1Yu8zLMMMPeV-IZvkd3E3K37OESzxHyrD2eDOZ0fz8THdfuXtCOZmWSsOe1IMMom5wX91EorymuELA1bwXoGC6GTzON-_1LhC65N%3Ds0-e365"
   },
   {
     "name": "フルフル",
     "reading": "ふるふる",
-    "slug": "khezu"
+    "slug": "khezu",
+    "image": "https://lh3.googleusercontent.com/-IcNEoazP-innMl1GmhJAO1cnO8lf3bWDBecKQcVOjcSdKdTzp3SQwhuXF3B-tqZokUm5BFYWqw934L_4MC5ISX8kWA1XNLi7JA%3Ds0-e365"
   },
   {
     "name": "クシャルダオラ",
     "reading": "くしゃるだおら",
-    "slug": "kushaladaora"
+    "slug": "kushala-daora",
+    "image": "https://lh3.googleusercontent.com/--XNCDTZaZADmio05In9xFzgy_ppIYzD_gxmmboaVK4beuli_KOCzJMdfhTya_uvov9LM7smOrTFGYYUQRZt2V7nTVtcoTeNRw%3Ds0-e365"
   },
   {
     "name": "タマミツネ",
     "reading": "たまみつね",
-    "slug": "mizutsune"
+    "slug": "mizutsune",
+    "image": "https://lh3.googleusercontent.com/DhpzTAe7EVU-9pzWz2tiK17fHP5C9v5cXaGXZCzdmnCme0DrgD87z2xdAbH9HV2urek1YGxLKP_AInz9foJEdqGEMnLplaNFYQur%3Ds0-e365"
   },
   {
     "name": "テオ・テスカトル",
     "reading": "ておてすかとる",
-    "slug": "teostra"
+    "slug": "teostra",
+    "image": "https://lh3.googleusercontent.com/TTX2GHKWdFVTlt6VraFLpuXcVl0d1bqhylFaapsRKOH7KfNOdApQrXorCsgOdDZkzdpv3qUfs0I1IAdOIVtIQDyfRAL6Mv6PiJM%3Ds0-e365"
   },
   {
     "name": "アケノシルム",
     "reading": "あけのしるむ",
-    "slug": "aknosom"
+    "slug": "aknosom",
+    "image": "https://lh3.googleusercontent.com/ta_p6C44w63M9KzlvRiFi8BOA73yghktDsLlSsm4m_8o55PO3wKq1MEz_s9hGUY-YTIt39qziiKQ_daAwLx5FRmftqni39N-ZA%3Ds0-e365"
   },
   {
     "name": "マガイマガド",
     "reading": "まがいまがど",
-    "slug": "magnamalo"
+    "slug": "magnamalo",
+    "image": "https://lh3.googleusercontent.com/mz4yxvD4oQ5V8Dy2kB3y_OvTko_XZhbl4nTiSKE60pPf_MlXjXLaRskV0Vcq1rM_hri6kpJEQtHeEfY8luKxx02fWTK-xmcjD5Y%3Ds0-e365"
   },
   {
     "name": "ラージャン",
     "reading": "らーじゃん",
-    "slug": "rajang"
+    "slug": "rajang",
+    "image": "https://lh3.googleusercontent.com/2HupagtJcVOb-oYs8Lyikrma4XUbnIGHE9jiWvjXZ0eICyBEk1o1XJNpGcOZYsK_gP0cvXW_YuC2BtZH5lzNlf40yGiUzMXeBw%3Ds0-e365"
   },
   {
     "name": "ネルギガンテ",
     "reading": "ねるぎがんて",
-    "slug": "nergigante"
+    "slug": "nergigante",
+    "image": "https://lh3.googleusercontent.com/PHn1CbgU8N0CW3wZE854jdp8G20HpE03G4KwEBbpet7upNCSY73e-TsFjLEEy5CLPI8DZR4wtDzlj8rQgvH6Mr95jv8AvYiInDo1%3Ds0-e365"
   },
   {
     "name": "ウルクスス",
     "reading": "うるくすす",
-    "slug": "lagombi"
+    "slug": "lagombi",
+    "image": "https://lh3.googleusercontent.com/5MA-8hRNaIwYKWqEF3Lkko7ZcmiCqE3wfpgv0lbLAd9DqgrsH6CJNcodLEOUmvozmYGvxuESno9XD9acfIVJjF5SB5QT6n-NvnU%3Ds0-e365"
   },
   {
     "name": "ラングロトラ",
     "reading": "らんぐろとら",
-    "slug": "volvidon"
+    "slug": "volvidon",
+    "image": "https://lh3.googleusercontent.com/y7iM7RbI8ClI6k34beFFDQS_leBHOqTvW21eu0tu7TBUQNZV64BUbOgYRyfVskV21NcLwcSud-mLRIVtVebaf9k_T33w3wY1s_2P%3Ds0-e365"
   },
   {
     "name": "イソネミクニ",
     "reading": "いそねみくに",
-    "slug": "somnacanth"
+    "slug": "somnacanth",
+    "image": "https://lh3.googleusercontent.com/zP9C5LUsiI2UgyZt6irtRik9tnvUwmzZFJbFn4-9zlKDfW09N7kiS5OCpcfWqSExhdAMNulVN3tL5-XghSqKGwFhlvCZvIlwNd8%3Ds0-e365"
   },
   {
     "name": "ティガレックス",
     "reading": "てぃがれっくす",
-    "slug": "tigrex"
+    "slug": "tigrex",
+    "image": "https://lh3.googleusercontent.com/xxR5h67F9Fh4GF25eLGN3FE56YOZXfq3iDMUUcQOtfcZmZAOd4J3iua0GKLzBMDmktS9xslcJguU61GRPAc64keEm9SvsUfVONU%3Ds0-e365"
   },
   {
     "name": "ティガレックス亜種",
     "reading": "てぃがれっくすあしゅ",
-    "slug": "brutetigrex"
+    "slug": "brutetigrex",
+    "image": "https://lh3.googleusercontent.com/vCPfj3epRdmSUPKtp4WwlRQ-pfLzQOCy1Yjkx4WINxw7hz7GdHDx27u29Rt37Nbh-qvKMnWPuCZIIxPMTQLvHIpTx22up3O6erM%3Ds0-e365"
   },
   {
     "name": "キリン",
     "reading": "きりん",
-    "slug": "kirin"
+    "slug": "kirin",
+    "image": "https://lh3.googleusercontent.com/z_LPpPCeBZ31x3FGPzmeH2OFizWVjLI7gIzAr8Z5y00viJ-43EtPkA019R30vpeviIFgkHs61dfVVGERg7obKp-i-1zp8FptJg%3Ds0-e365"
   },
   {
     "name": "バゼルギウス",
     "reading": "ばぜるぎうす",
-    "slug": "bazelgeuse"
+    "slug": "bazelgeuse",
+    "image": "https://lh3.googleusercontent.com/eYcGFTZExIpoB1Y9zt6LVXFopp-DUgRoA0Vu1_6WA5HhxmHv1i9Cy770BAStW5TZee94ZWBPE8zhF7-05taBO9t2GR3F9TehV0Y%3Ds0-e365"
   },
   {
     "name": "チャタカブラ",
     "reading": "ちゃたかぶら",
-    "slug": "chatacabra"
+    "slug": "chatacabra",
+    "image": "https://lh3.googleusercontent.com/dYLVWyHrZx3-ETCl6btwUMWflVm37QjKxgjvUnKbMvOxhbNeZaBWTRrnLZxvGpZJd22BOyO_LNno2Z-wqCI0PbBnw2y-8YAYso0%3Ds0-e365"
   },
   {
     "name": "アオアシラ",
     "reading": "あおあしら",
-    "slug": "arzuros"
+    "slug": "arzuros",
+    "image": "https://lh3.googleusercontent.com/m64mBYARkzbuBGJHMb4Z8qTPOhTiCh7ykd_6qIBuQ_jtdgzqFm-Kq_sytcpgC9LdYA0wik0Q92__ULtadI4AYy0kWrUEXE5d720%3Ds0-e365"
   },
   {
     "name": "ディノバルド",
     "reading": "でぃのばるど",
-    "slug": "glavenus"
+    "slug": "glavenus",
+    "image": "https://lh3.googleusercontent.com/_WrOc0hwUCntZgEmDIbNNeHl9WTiwqfjS3thMM6HwLb7beMt3xwbVKAzpKtf9VGad1HXaaFbsJXUR91JaeCahtUnQBngkZHQ-1CA%3Ds0-e365"
   },
   {
     "name": "オオナズチ",
     "reading": "おおなずち",
-    "slug": "chameleos"
+    "slug": "chameleos",
+    "image": "https://lh3.googleusercontent.com/w4TVhLe7zrPWjtz5qgKHY4ezNBHhkrOPcSTZaxmQolpAKhwk-QVtvfxV1R9hPzo3a9DofXo-uUlroJLx6jw_VTLnqOEqmSaZq3o%3Ds0-e365"
   },
   {
     "name": "ドスフロギィ",
     "reading": "どすふろぎぃ",
-    "slug": "greatwroggi"
+    "slug": "great-wroggi",
+    "image": "https://lh3.googleusercontent.com/OYYnXc-zBDRmGI4mLVYs9NMy3WpXQPRB0A4fiXOa5KUK9hbW9muAOFDPPgKMh0NJYuK-NLJRQcStI5FGWpyf_0_dy6MApF14qyI%3Ds0-e365"
   },
   {
     "name": "ビシュテンゴ",
     "reading": "びしゅてんご",
-    "slug": "bishaten"
+    "slug": "bishaten",
+    "image": "https://lh3.googleusercontent.com/qMQFNvs6eheNeNkPoMoIZ8taogxcIJbYy2nW7EzYPIQF999LRB7cndmg-xSoDzy1hm_7p_mbfl0aw412o1BDiViy47asPEKaMp0%3Ds0-e365"
   },
   {
     "name": "ブラントドス",
     "reading": "ぶらんとどす",
-    "slug": "beotodus"
+    "slug": "beotodus",
+    "image": "https://lh3.googleusercontent.com/w2Ri3uZMaSTUxeHkNSbHba27cC-_ZFNK0DSUtxwb2zOvcvZuAwbmMX1SbDijEq1LBl9y1fLtde6ZXnq6LV6RJ-f2l-k7Lo6zkiw%3Ds0-e365"
   },
   {
     "name": "ナルガクルガ",
     "reading": "なるがくるが",
-    "slug": "nargacuga"
+    "slug": "nargacuga",
+    "image": "https://lh3.googleusercontent.com/XL0OeKv8z5lEhHieEYDvo9L-TWCvu-vJifmNRcFi-zYIPGxwlxwnlDJAl-vhVL9FEKRnnEvYnZF4qSvqILBwBO2uaQfUpz9LVO0%3Ds0-e365"
   },
   {
     "name": "ネロミェール",
     "reading": "ねろみぇーる",
-    "slug": "namielle"
+    "slug": "namielle",
+    "image": "https://lh3.googleusercontent.com/7VcW2RyCEg2SUT-UT3HElEzULj4dex4GUrJ2inZSWVzERgmiWl2Gg2QX4QJ2bwlBc2QGjQnnoxw3BHr65HvAQiUk9tvkguWDjL8%3Ds0-e365"
   },
   {
     "name": "ガランゴルム",
     "reading": "がらんごるむ",
-    "slug": "garangolm"
+    "slug": "garangolm",
+    "image": "https://lh3.googleusercontent.com/lKsK58gm-CGPC2tUtjho7N4OVpGS4uCV_mmwLI2NXTdZV23_wHa4nXhLnfcwarv95NhdFE3YkX7hSU3Ig6n-OwzfzIDUCfhDCJw%3Ds0-e365"
   },
   {
     "name": "ルナガロン",
     "reading": "るながろん",
-    "slug": "lunagaron"
+    "slug": "lunagaron",
+    "image": "https://lh3.googleusercontent.com/IpI8HaxkyKujOGybIT-kzWqjrhUyP6R_ur5BiJkwH4F4lWUNCm0W--CedZvSRVXG7lAHeV9M25bwCJA2b7mDXLkTPDkNJFYU8Vs%3Ds0-e365"
   },
   {
     "name": "エスピナス",
     "reading": "えすぴなす",
-    "slug": "espinas"
+    "slug": "espinas",
+    "image": "https://lh3.googleusercontent.com/7JEICzo6fR-CNZ9N4VU-vYzYprrWRVm0dkIjWLt9nzGEfRCT9xGzah22aJi8LeTYajP24Gxif9qHeKgbD1ZXU3RBhLNDowcw90g%3Ds0-e365"
   },
   {
     "name": "メル・ゼナ",
     "reading": "めるぜな",
-    "slug": "malzeno"
+    "slug": "malzeno",
+    "image": "https://lh3.googleusercontent.com/-d3mHs8Af0GUH8pH6ffF4zem8VBQEWp5r59FGKPzwWfeiNUGaTazbF2XRypFDrX2rP_ytVcFvE8ksGepcJL2OZQE7bQ750vl7Xk%3Ds0-e365"
   },
   {
     "name": "ケマトリス",
     "reading": "けまとりす",
-    "slug": "quematrice"
+    "slug": "quematrice",
+    "image": "https://lh3.googleusercontent.com/zyr-lSKknfLjllH-DA-VfIGKAwdG-GdIcmZi9PWwovQFQ7Hwzjzz6AQtNKifYTx6jydGLPKKPgeexTYSoCeteg8p1MnDKryuZL9e%3Ds0-e365"
   },
   {
     "name": "ゴシャハギ",
     "reading": "ごしゃはぎ",
-    "slug": "gossharag"
+    "slug": "gossharag",
+    "image": "https://lh3.googleusercontent.com/BytD9nhqjX8e6sLBgkgQDsWgGwa88LyUBA3kiYCe7ZNRPyTxwsEv4eU3mrIYX0rG4HimS8ZhQPtF5jt82V3p1EX0sb4TLdEr4Q%3Ds0-e365"
   },
   {
     "name": "ライゼクス",
     "reading": "らいぜくす",
-    "slug": "astalos"
+    "slug": "astalos",
+    "image": "https://lh3.googleusercontent.com/uDMXzMPDtXAiOIAHuTNe5YkHilO4G9PyJRejXTQr2epfVfzhTIbc-N1iRTT6XNrEOt4e4_L9ECm1zFsWh3wVndwRjO8-oiF510c%3Ds0-e365"
   },
   {
     "name": "オロミドロ",
     "reading": "おろみどろ",
-    "slug": "almudron"
+    "slug": "almudron",
+    "image": "https://lh3.googleusercontent.com/OXMppH1LqxsF-HQSZAeutu5FllWQOudywMZwSRIFrR38RBFctu5ReA_S8SpwkHsjXx1NpjuD5dkMhw48zXg_lA3mJswKUB4F_2hz%3Ds0-e365"
   },
   {
     "name": "セルレギオス",
     "reading": "せるれぎおす",
-    "slug": "seregios"
+    "slug": "seregios",
+    "image": "https://lh3.googleusercontent.com/6EqT6eY_uzTvt3K0A2M4bIE1NsH_E5Gh1qt_27Ergx2Z63g3wJgE2JIBySAaJJ4m7TJQ6nrUq6HIZgAdVdIfxEb23N4Jjqv4XDYd%3Ds0-e365"
   },
   {
     "name": "ショウグンギザミ",
     "reading": "しょうぐんぎざみ",
-    "slug": "shogunceanataur"
+    "slug": "shogunceanataur",
+    "image": "https://lh3.googleusercontent.com/LqlvePyBkt-q958E-sInnDChLIShGd6mCurhOit9eQ5SmHtY4ZWVwDltk6MOKFmUzYWSPIkxxZV-Z1FZbqaw3w9zyckhHBtcDw%3Ds0-e365"
   },
   {
     "name": "イヴェルカーナ",
     "reading": "いゔぇるかーな",
-    "slug": "velkhana"
+    "slug": "velkhana",
+    "image": "https://lh3.googleusercontent.com/vRZW7pcbTXRgJBVOrMrr944YuxB0XjCifFsGnnXlX94QZu1qrAk188qBk1AYTfQ4IspTIcdA0Xxx094jWaRzvP5v6MISlV1bNWRMS26EywAL%3Ds0-e365"
   }
 ]
