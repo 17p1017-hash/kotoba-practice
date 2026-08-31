@@ -1,26 +1,43 @@
 let words = [];
 let pokemon = [];
 
-const soundInput = document.getElementById("soundInput");
-const searchButton = document.getElementById("searchButton");
+const soundInput =
+  document.getElementById("soundInput");
+
+const wordSearchButton =
+  document.getElementById("wordSearchButton");
+
+const pokemonSearchButton =
+  document.getElementById("pokemonSearchButton");
+
+const wordResultsSection =
+  document.getElementById("wordResultsSection");
+
+const pokemonResultsSection =
+  document.getElementById("pokemonResultsSection");
 
 const wordStartResults =
   document.getElementById("wordStartResults");
+
 const wordMiddleResults =
   document.getElementById("wordMiddleResults");
+
 const wordEndResults =
   document.getElementById("wordEndResults");
 
 const pokemonStartResults =
   document.getElementById("pokemonStartResults");
+
 const pokemonMiddleResults =
   document.getElementById("pokemonMiddleResults");
+
 const pokemonEndResults =
   document.getElementById("pokemonEndResults");
 
 
 async function loadData() {
   try {
+
     const [wordsResponse, pokemonResponse] =
       await Promise.all([
         fetch("./data/words.json"),
@@ -42,8 +59,12 @@ async function loadData() {
     console.log("ポケモン:", pokemon.length);
 
   } catch (error) {
+
     console.error(error);
-    alert("ことばデータの読み込みに失敗しました");
+
+    alert(
+      "ことばデータの読み込みに失敗しました"
+    );
   }
 }
 
@@ -51,91 +72,126 @@ async function loadData() {
 loadData();
 
 
-searchButton.addEventListener("click", searchWords);
+// ========================
+// ふつうのことばボタン
+// ========================
 
-soundInput.addEventListener("keydown", function (event) {
-  if (event.key === "Enter") {
-    searchWords();
-  }
-});
+wordSearchButton.addEventListener(
+  "click",
+  function () {
 
+    const sound = getSearchSound();
 
-function searchWords() {
-  const rawSound = soundInput.value.trim();
+    if (!sound) {
+      return;
+    }
 
-  clearResults();
+    clearResults();
 
-  if (rawSound === "") {
-    alert("練習したい音を入力してください");
-    return;
-  }
+    pokemonResultsSection.classList.remove("show");
+    wordResultsSection.classList.add("show");
 
-  const sound = normalizeKana(rawSound);
+    const results =
+      classifyWords(words, sound);
 
-
-  // --------------------
-  // ふつうのことば
-  // --------------------
-
-  const wordResults =
-    classifyWords(words, sound);
-
-  showWordResults(
-    wordStartResults,
-    wordResults.start
-  );
-
-  showWordResults(
-    wordMiddleResults,
-    wordResults.middle
-  );
-
-  showWordResults(
-    wordEndResults,
-    wordResults.end
-  );
-
-
-  // --------------------
-  // ポケモン
-  // --------------------
-
-  const pokemonWithNumbers =
-    pokemon.map(function (name, index) {
-      return {
-        name: name,
-        number: index + 1
-      };
-    });
-
-
-  const pokemonResults =
-    classifyPokemon(
-      pokemonWithNumbers,
-      sound
+    showWordResults(
+      wordStartResults,
+      results.start
     );
 
+    showWordResults(
+      wordMiddleResults,
+      results.middle
+    );
 
-  showPokemonResults(
-    pokemonStartResults,
-    pokemonResults.start
-  );
+    showWordResults(
+      wordEndResults,
+      results.end
+    );
+  }
+);
 
-  showPokemonResults(
-    pokemonMiddleResults,
-    pokemonResults.middle
-  );
 
-  showPokemonResults(
-    pokemonEndResults,
-    pokemonResults.end
-  );
+// ========================
+// ポケモンボタン
+// ========================
+
+pokemonSearchButton.addEventListener(
+  "click",
+  function () {
+
+    const sound = getSearchSound();
+
+    if (!sound) {
+      return;
+    }
+
+    clearResults();
+
+    wordResultsSection.classList.remove("show");
+    pokemonResultsSection.classList.add("show");
+
+    const pokemonWithNumbers =
+      pokemon.map(function (name, index) {
+
+        return {
+          name: name,
+          number: index + 1
+        };
+
+      });
+
+    const results =
+      classifyPokemon(
+        pokemonWithNumbers,
+        sound
+      );
+
+    showPokemonResults(
+      pokemonStartResults,
+      results.start
+    );
+
+    showPokemonResults(
+      pokemonMiddleResults,
+      results.middle
+    );
+
+    showPokemonResults(
+      pokemonEndResults,
+      results.end
+    );
+  }
+);
+
+
+// ========================
+// 入力された音を取得
+// ========================
+
+function getSearchSound() {
+
+  const rawSound =
+    soundInput.value.trim();
+
+  if (rawSound === "") {
+
+    alert(
+      "練習したい音を入力してください"
+    );
+
+    soundInput.focus();
+
+    return null;
+  }
+
+  return normalizeKana(rawSound);
 }
 
 
-// ====================
+// ========================
 // ふつうのことば分類
-// ====================
+// ========================
 
 function classifyWords(list, sound) {
 
@@ -153,18 +209,21 @@ function classifyWords(list, sound) {
     }
 
     if (normalizedWord.startsWith(sound)) {
+
       start.push(word);
+
       return;
     }
 
     if (normalizedWord.endsWith(sound)) {
+
       end.push(word);
+
       return;
     }
 
     middle.push(word);
   });
-
 
   return {
     start,
@@ -174,9 +233,9 @@ function classifyWords(list, sound) {
 }
 
 
-// ====================
+// ========================
 // ポケモン分類
-// ====================
+// ========================
 
 function classifyPokemon(list, sound) {
 
@@ -187,25 +246,30 @@ function classifyPokemon(list, sound) {
   list.forEach(function (pokemonData) {
 
     const normalizedName =
-      normalizeKana(pokemonData.name);
+      normalizeKana(
+        pokemonData.name
+      );
 
     if (!normalizedName.includes(sound)) {
       return;
     }
 
     if (normalizedName.startsWith(sound)) {
+
       start.push(pokemonData);
+
       return;
     }
 
     if (normalizedName.endsWith(sound)) {
+
       end.push(pokemonData);
+
       return;
     }
 
     middle.push(pokemonData);
   });
-
 
   return {
     start,
@@ -215,17 +279,21 @@ function classifyPokemon(list, sound) {
 }
 
 
-// ====================
+// ========================
 // ふつうのことば表示
-// ====================
+// ========================
 
-function showWordResults(element, results) {
+function showWordResults(
+  element,
+  results
+) {
 
   if (results.length === 0) {
+
     element.textContent = "なし";
+
     return;
   }
-
 
   results.forEach(function (word) {
 
@@ -239,26 +307,31 @@ function showWordResults(element, results) {
 }
 
 
-// ====================
+// ========================
 // ポケモン表示
-// 画像 + 図鑑番号 + 公式ずかんリンク
-// ====================
+// ========================
 
-function showPokemonResults(element, results) {
+function showPokemonResults(
+  element,
+  results
+) {
 
   if (results.length === 0) {
+
     element.textContent = "なし";
+
     return;
   }
-
 
   results.forEach(function (pokemonData) {
 
     const numberText =
-      String(pokemonData.number).padStart(4, "0");
+      String(
+        pokemonData.number
+      ).padStart(4, "0");
 
 
-    // 公式ずかんへのリンク
+    // 公式ポケモンずかんリンク
     const link =
       document.createElement("a");
 
@@ -267,10 +340,15 @@ function showPokemonResults(element, results) {
       numberText;
 
     link.target = "_blank";
-    link.rel = "noopener noreferrer";
+
+    link.rel =
+      "noopener noreferrer";
 
     link.style.display = "block";
-    link.style.textDecoration = "none";
+
+    link.style.textDecoration =
+      "none";
+
     link.style.color = "inherit";
 
 
@@ -279,18 +357,29 @@ function showPokemonResults(element, results) {
       document.createElement("div");
 
     card.style.display = "flex";
-    card.style.alignItems = "center";
+
+    card.style.alignItems =
+      "center";
+
     card.style.gap = "12px";
-    card.style.background = "#ffffff";
-    card.style.borderRadius = "16px";
-    card.style.padding = "10px";
-    card.style.marginBottom = "10px";
-    card.style.cursor = "pointer";
+
+    card.style.background =
+      "#ffffff";
+
+    card.style.borderRadius =
+      "16px";
+
+    card.style.padding =
+      "10px";
+
+    card.style.marginBottom =
+      "10px";
+
     card.style.boxShadow =
-      "0 2px 8px rgba(0, 0, 0, 0.06)";
+      "0 2px 8px rgba(0,0,0,0.06)";
 
 
-    // ポケモン画像
+    // 画像
     const image =
       document.createElement("img");
 
@@ -299,51 +388,62 @@ function showPokemonResults(element, results) {
       pokemonData.number +
       ".png";
 
-    image.alt = pokemonData.name;
+    image.alt =
+      pokemonData.name;
 
     image.width = 80;
     image.height = 80;
+
     image.loading = "lazy";
 
 
-    // 文字部分
+    // 文字
     const text =
       document.createElement("div");
 
-
-    // 名前
     const name =
       document.createElement("div");
 
     name.textContent =
       pokemonData.name;
 
-    name.style.fontSize = "20px";
-    name.style.fontWeight = "bold";
+    name.style.fontSize =
+      "20px";
+
+    name.style.fontWeight =
+      "bold";
 
 
-    // 図鑑番号
     const number =
       document.createElement("div");
 
     number.textContent =
       "No." + numberText;
 
-    number.style.fontSize = "13px";
-    number.style.color = "#888";
-    number.style.marginTop = "3px";
+    number.style.fontSize =
+      "13px";
+
+    number.style.color =
+      "#888";
+
+    number.style.marginTop =
+      "3px";
 
 
-    // 公式ずかん案内
     const guide =
       document.createElement("div");
 
     guide.textContent =
       "公式ポケモンずかんを見る →";
 
-    guide.style.fontSize = "13px";
-    guide.style.marginTop = "5px";
-    guide.style.color = "#7d6aac";
+    guide.style.fontSize =
+      "13px";
+
+    guide.style.color =
+      "#7d6aac";
+
+    guide.style.marginTop =
+      "5px";
 
 
     text.appendChild(name);
@@ -360,9 +460,9 @@ function showPokemonResults(element, results) {
 }
 
 
-// ====================
-// 結果を消す
-// ====================
+// ========================
+// 検索結果を消す
+// ========================
 
 function clearResults() {
 
@@ -376,9 +476,9 @@ function clearResults() {
 }
 
 
-// ====================
-// ひらがな・カタカナ統一
-// ====================
+// ========================
+// カタカナ → ひらがな
+// ========================
 
 function normalizeKana(text) {
 
