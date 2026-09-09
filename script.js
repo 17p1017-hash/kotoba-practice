@@ -20,7 +20,6 @@ const KUROMOJI_DIC_PATH =
 
 // ========================================================
 // 音声認識の漢字 → 読み フォールバック
-// kuromoji が利用できない場合だけ使う
 // ========================================================
 
 const SPEECH_READING_FALLBACKS = {
@@ -1429,8 +1428,15 @@ function startPronunciationCheck(
     false;
 
 
+  // ======================================================
+  // 発音判定を厳しくする
+  //
+  // 複数候補の中に正解が混ざっただけで
+  // 正解にならないよう、最有力候補1件だけ取得する
+  // ======================================================
+
   recognition.maxAlternatives =
-    5;
+    1;
 
 
   button.disabled =
@@ -1452,21 +1458,28 @@ function startPronunciationCheck(
         event.results[0];
 
 
-      const alternatives =
-        [];
-
-
-      for (
-        let i = 0;
-        i < result.length;
-        i++
+      if (
+        !result ||
+        !result[0]
       ) {
 
-        alternatives.push(
-          result[i].transcript
+        statusElement.textContent =
+          "うまく聞き取れませんでした。もう一度やってみよう。";
+
+
+        statusElement.classList.add(
+          "error"
         );
 
+
+        return;
+
       }
+
+
+      // 最有力候補だけを使う
+      const recognizedText =
+        result[0].transcript;
 
 
       statusElement.textContent =
@@ -1477,7 +1490,7 @@ function startPronunciationCheck(
 
         await showPronunciationResult(
           targetData,
-          alternatives,
+          recognizedText,
           statusElement
         );
 
@@ -1587,11 +1600,14 @@ function startPronunciationCheck(
 
 // ========================================================
 // 発音判定
+// 最有力候補1件だけで判定
+// 正解判定は完全一致のみ
+// 類似度は「おしい」の表示だけに使う
 // ========================================================
 
 async function showPronunciationResult(
   targetData,
-  alternatives,
+  originalText,
   statusElement
 ) {
 
@@ -1625,32 +1641,115 @@ async function showPronunciationResult(
       [];
 
 
-  const normalizedAliases =
-    targetAliases.map(
-      (alias) =>
-        normalizeSpeechText(
-          alias
-        )
-    );
-
-
   const acceptableDirect =
     new Set([
       targetName,
-      targetReading,
-      ...normalizedAliases
-    ]);
-
-
-  const acceptableReadings =
-    new Set([
       targetReading
     ]);
 
 
+  targetAliases.forEach(
+    (alias) => {
+
+      acceptableDirect.add(
+        normalizeSpeechText(
+          alias
+        )
+      );
+
+    }
+  );
+
+
+  const normalizedText =
+    normalizeSpeechText(
+      originalText
+    );
+
+
+  const convertedReading =
+    await convertJapaneseToReading(
+      originalText
+    );
+
+
+  const normalizedReading =
+    normalizeSpeechText(
+      convertedReading
+    );
+
+
+  console.log(
+    "最有力の音声認識結果:",
+    originalText
+  );
+
+
+  console.log(
+    "正規化後:",
+    normalizedText
+  );
+
+
+  console.log(
+    "読み変換後:",
+    normalizedReading
+  );
+
+
+  // ======================================================
+  // 正解判定 1
+  // 表記そのものの完全一致
+  // ======================================================
+
+  if (
+    acceptableDirect.has(
+      normalizedText
+    )
+  ) {
+
+    showSuccess(
+      statusElement,
+      originalText,
+      normalizedReading
+    );
+
+
+    return;
+
+  }
+
+
+  // ======================================================
+  // 正解判定 2
+  // 漢字 → 読み変換後の完全一致
+  // ======================================================
+
+  if (
+    normalizedReading
+    ===
+    targetReading
+  ) {
+
+    showSuccess(
+      statusElement,
+      originalText,
+      normalizedReading
+    );
+
+
+    return;
+
+  }
+
+
+  // ======================================================
+  // aliases の読みも完全一致だけ正解
+  // ======================================================
+
   for (
     const alias
-    of normalizedAliases
+    of targetAliases
   ) {
 
     const aliasReading =
@@ -1661,169 +1760,104 @@ async function showPronunciationResult(
       );
 
 
-    acceptableReadings.add(
+    if (
+      normalizedReading
+      ===
       aliasReading
-    );
+    ) {
+
+      showSuccess(
+        statusElement,
+        originalText,
+        normalizedReading
+      );
+
+
+      return;
+
+    }
 
   }
 
 
-  const checkedResults =
-    [];
+  // ======================================================
+  // ここから下は不正解
+  //
+  // 類似度が高くても正解にはしない
+  // 「おしい！」の表示にだけ使う
+  // ======================================================
+
+  let bestScore =
+    Math.max(
+
+      similarityScore(
+        targetName,
+        normalizedText
+      ),
+
+      similarityScore(
+        targetReading,
+        normalizedReading
+      )
+
+    );
 
 
   for (
-    const originalText
-    of alternatives
+    const alias
+    of targetAliases
   ) {
 
-    const normalizedText =
+    const normalizedAlias =
       normalizeSpeechText(
-        originalText
+        alias
       );
 
 
-    const convertedReading =
-      await convertJapaneseToReading(
-        normalizedText
-      );
-
-
-    const normalizedReading =
+    const aliasReading =
       normalizeSpeechText(
-        convertedReading
+        await convertJapaneseToReading(
+          alias
+        )
       );
 
 
-    checkedResults.push({
+    bestScore =
+      Math.max(
 
-      original:
-        originalText,
+        bestScore,
 
-      normalized:
-        normalizedText,
+        similarityScore(
+          normalizedAlias,
+          normalizedText
+        ),
 
-      reading:
-        normalizedReading
+        similarityScore(
+          aliasReading,
+          normalizedReading
+        )
 
-    });
-
-
-    // 表記そのものが一致
-    if (
-      acceptableDirect.has(
-        normalizedText
-      )
-    ) {
-
-      showSuccess(
-        statusElement,
-        originalText,
-        normalizedReading
       );
-
-
-      return;
-
-    }
-
-
-    // 漢字 → 読み が正解または別名の読みと一致
-    if (
-      acceptableReadings.has(
-        normalizedReading
-      )
-    ) {
-
-      showSuccess(
-        statusElement,
-        originalText,
-        normalizedReading
-      );
-
-
-      return;
-
-    }
 
   }
 
 
   // ======================================================
-  // 一番近い候補
+  // 似ている場合
+  //
+  // 例:
+  // ゼニガメ → ゼリガメ
+  // ゼニガメ → ゼニダメ
+  //
+  // 正解にはせず「おしい」
   // ======================================================
 
-  let bestResult =
-    null;
-
-
-  let bestScore =
-    0;
-
-
-  checkedResults.forEach(
-    (result) => {
-
-      let readingScore =
-        similarityScore(
-          targetReading,
-          result.reading
-        );
-
-
-      acceptableReadings.forEach(
-        (acceptableReading) => {
-
-          readingScore =
-            Math.max(
-              readingScore,
-              similarityScore(
-                acceptableReading,
-                result.reading
-              )
-            );
-
-        }
-      );
-
-
-      const score =
-        Math.max(
-
-          similarityScore(
-            targetName,
-            result.normalized
-          ),
-
-          readingScore
-
-        );
-
-
-      if (
-        score > bestScore
-      ) {
-
-        bestScore =
-          score;
-
-
-        bestResult =
-          result;
-
-      }
-
-    }
-  );
-
-
   if (
-    bestResult &&
     bestScore >= 0.65
   ) {
 
     statusElement.textContent =
-      `🙂 おしい！「${bestResult.original}」と聞こえました。もう一回やってみよう。`;
+      `🙂 おしい！「${originalText}」と聞こえました。もう一回やってみよう。`;
 
 
     statusElement.classList.add(
@@ -1836,19 +1870,12 @@ async function showPronunciationResult(
   }
 
 
-  if (
-    checkedResults[0]
-  ) {
+  // ======================================================
+  // 大きく違う場合
+  // ======================================================
 
-    statusElement.textContent =
-      `🔁 「${checkedResults[0].original}」と聞こえました。もう一度ゆっくり言ってみよう。`;
-
-  } else {
-
-    statusElement.textContent =
-      "🔁 うまく聞き取れませんでした。もう一度やってみよう。";
-
-  }
+  statusElement.textContent =
+    `🔁 「${originalText}」と聞こえました。もう一度ゆっくり言ってみよう。`;
 
 
   statusElement.classList.add(
@@ -2099,20 +2126,37 @@ async function convertJapaneseToReading(
   text
 ) {
 
-  const cleanedText =
-    cleanSpeechText(
-      text
+  const original =
+    String(
+      text ||
+      ""
     );
 
 
   if (
     !containsKanji(
-      cleanedText
+      original
     )
   ) {
 
     return normalizeKana(
-      cleanedText
+      original
+    );
+
+  }
+
+
+  if (
+    Object.prototype.hasOwnProperty.call(
+      SPEECH_READING_FALLBACKS,
+      original
+    )
+  ) {
+
+    return normalizeKana(
+      SPEECH_READING_FALLBACKS[
+        original
+      ]
     );
 
   }
@@ -2126,7 +2170,7 @@ async function convertJapaneseToReading(
 
     const tokens =
       tokenizer.tokenize(
-        cleanedText
+        original
       );
 
 
@@ -2156,41 +2200,16 @@ async function convertJapaneseToReading(
     );
 
 
-    const normalizedReading =
-      normalizeKana(
-        reading
-      );
-
-
-    // kuromoji が漢字を読みへ変換できなかった場合だけ
-    // フォールバック辞書を使う
-    if (
-      containsKanji(
-        normalizedReading
-      ) &&
-      Object.prototype.hasOwnProperty.call(
-        SPEECH_READING_FALLBACKS,
-        cleanedText
-      )
-    ) {
-
-      return normalizeKana(
-        SPEECH_READING_FALLBACKS[
-          cleanedText
-        ]
-      );
-
-    }
-
-
-    return normalizedReading;
+    return normalizeKana(
+      reading
+    );
 
 
   } catch (error) {
 
     console.warn(
       "漢字の読み変換に失敗:",
-      cleanedText,
+      original,
       error
     );
 
@@ -2198,13 +2217,13 @@ async function convertJapaneseToReading(
     if (
       Object.prototype.hasOwnProperty.call(
         SPEECH_READING_FALLBACKS,
-        cleanedText
+        original
       )
     ) {
 
       return normalizeKana(
         SPEECH_READING_FALLBACKS[
-          cleanedText
+          original
         ]
       );
 
@@ -2212,7 +2231,7 @@ async function convertJapaneseToReading(
 
 
     return normalizeKana(
-      cleanedText
+      original
     );
 
   }
@@ -2241,33 +2260,19 @@ function containsKanji(
 // 音声認識結果の正規化
 // ========================================================
 
-function cleanSpeechText(
-  text
-) {
-
-  return String(
-    text ||
-    ""
-  )
-    .normalize(
-      "NFKC"
-    )
-    .replace(
-      /[、。,.!?！？「」『』（）()【】［］\[\]・:：\-\s♀♂]/g,
-      ""
-    );
-
-}
-
-
 function normalizeSpeechText(
   text
 ) {
 
   return normalizeKana(
-    cleanSpeechText(
-      text
+    String(
+      text ||
+      ""
     )
+      .replace(
+        /[、。,.!?！？「」『』（）()【】［］\[\]・:：\-\s♀♂]/g,
+        ""
+      )
   );
 
 }
