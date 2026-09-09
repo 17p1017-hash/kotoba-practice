@@ -3,534 +3,391 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>ことば検索</title>
-
   <style>
-
     body {
       margin: 0;
       padding: 24px 16px;
-
       font-family:
         -apple-system,
         BlinkMacSystemFont,
         "Hiragino Sans",
         "Yu Gothic",
         sans-serif;
-
       background: #fffaf6;
       color: #4a4a4a;
     }
-
-
     .container {
       max-width: 720px;
       margin: 0 auto;
     }
-
-
     h1 {
       text-align: center;
       font-size: 32px;
       margin-bottom: 8px;
     }
-
-
     .message {
       text-align: center;
       color: #777;
       margin-bottom: 24px;
     }
-
-
     .search-box {
       background: white;
       padding: 20px;
-
       border-radius: 22px;
-
       box-shadow:
         0 4px 14px
         rgba(0, 0, 0, 0.08);
-
       margin-bottom: 22px;
     }
-
-
     .label {
       display: block;
-
       font-weight: bold;
-
       margin-bottom: 10px;
     }
-
-
     input {
       box-sizing: border-box;
-
       width: 100%;
-
       font-size: 22px;
-
       padding: 14px 16px;
-
       border:
         2px solid #eadfd7;
-
       border-radius: 14px;
-
       outline: none;
-
       background: #fffdfb;
     }
-
-
     input:focus {
       border-color: #e8b9a8;
     }
-
-
     .choice-title {
       text-align: center;
-
       margin:
         24px 0 14px;
-
       font-size: 18px;
-
       font-weight: bold;
     }
-
-
     .choice-buttons {
       display: grid;
-
       grid-template-columns:
         repeat(3, 1fr);
-
       gap: 10px;
     }
-
-
     .choice-button {
       min-height: 72px;
-
       border: none;
-
       border-radius: 18px;
-
       padding: 12px 8px;
-
       font-size: 16px;
-
       font-weight: bold;
-
       cursor: pointer;
     }
-
-
     .choice-button:active {
       transform: scale(0.98);
     }
-
-
     .word-button {
       background: #dff3e5;
       color: #496c57;
     }
-
-
     .pokemon-button {
       background: #eee8fa;
       color: #67558d;
     }
-
-
     .monster-button {
       background: #f6e5da;
       color: #765343;
     }
-
-
     .results {
       display: none;
     }
-
-
     .results.show {
       display: block;
     }
-
-
     .section {
       background: white;
-
       border-radius: 22px;
-
       padding: 20px;
-
       margin-bottom: 24px;
-
       box-shadow:
         0 4px 14px
         rgba(0, 0, 0, 0.06);
     }
-
-
     .section-title {
       margin-top: 0;
-
       text-align: center;
-
       font-size: 25px;
     }
-
-
     .result-group {
       background: #fffaf7;
-
       border-radius: 16px;
-
       padding: 14px 16px;
-
       margin-top: 14px;
     }
-
-
     .result-group h3 {
       margin: 0 0 10px;
-
       font-size: 18px;
     }
-
-
     .result-group p {
       margin: 7px 0;
-
       padding: 9px 10px;
-
       background: white;
-
       border-radius: 10px;
     }
-
-
     .result-card {
       display: flex;
-
       align-items: center;
-
       gap: 12px;
-
       min-height: 82px;
-
       background: white;
-
       border-radius: 16px;
-
       padding: 10px;
-
       margin-bottom: 10px;
-
       box-shadow:
         0 2px 8px
         rgba(0, 0, 0, 0.06);
     }
-
-
     .result-card img {
       width: 80px;
       height: 80px;
-
       object-fit: contain;
-
       flex-shrink: 0;
     }
-
-
     .card-name {
       font-size: 20px;
       font-weight: bold;
     }
-
-
     .card-sub {
       font-size: 13px;
-
       color: #777;
-
       margin-top: 5px;
     }
-
-
     .card-link {
       text-decoration: none;
       color: inherit;
       display: block;
+      flex: 1;
+      min-width: 0;
     }
-
-
+    .practice-item {
+      background: white;
+      border-radius: 14px;
+      padding: 10px 12px;
+      margin: 8px 0;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+    .practice-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .practice-word {
+      font-size: 21px;
+      font-weight: bold;
+    }
+    .practice-button {
+      flex-shrink: 0;
+      border: none;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      background: #ffe3a8;
+      color: #6d5423;
+    }
+    .practice-button:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+    .practice-status {
+      min-height: 22px;
+      margin-top: 7px;
+      font-size: 14px;
+      color: #666;
+    }
+    .practice-status.success {
+      color: #2d7b48;
+      font-weight: bold;
+    }
+    .practice-status.near {
+      color: #9a6a11;
+      font-weight: bold;
+    }
+    .practice-status.error {
+      color: #a84949;
+    }
+    .speech-note {
+      margin: 18px 0 0;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: #fff4cf;
+      color: #6f5b20;
+      font-size: 13px;
+      line-height: 1.6;
+    }
     @media (max-width: 560px) {
-
       .choice-buttons {
         grid-template-columns: 1fr;
       }
-
-
       h1 {
         font-size: 28px;
       }
-
-
       .choice-button {
         min-height: 60px;
-
         font-size: 17px;
       }
-
     }
-
   </style>
 </head>
-
-
 <body>
-
   <div class="container">
-
     <h1>
       ことば検索
     </h1>
-
-
     <p class="message">
       練習したい音を入力して、
       探したい種類を選んでください
     </p>
-
-
+    <p class="speech-note">
+      🎤 「発音する」を押すと、マイクでことばを聞き取り、発音をかんたんにチェックします。
+      ※ 音声認識による試作判定です。専門的な構音評価ではありません。
+    </p>
     <div class="search-box">
-
       <label
         class="label"
         for="soundInput"
       >
         練習したい音
       </label>
-
-
       <input
         type="text"
         id="soundInput"
         placeholder="例：つ、す、か"
       >
-
-
       <div class="choice-title">
         どっちで探す？
       </div>
-
-
       <div class="choice-buttons">
-
-
         <button
           id="wordSearchButton"
           class="choice-button word-button"
         >
           🌱 ふつうのことば
         </button>
-
-
         <button
           id="pokemonSearchButton"
           class="choice-button pokemon-button"
         >
           ⭐ ポケモン
         </button>
-
-
         <button
           id="monsterSearchButton"
           class="choice-button monster-button"
         >
           ⚔️ モンハン
         </button>
-
-
       </div>
-
     </div>
-
-
-
     <!-- ふつうのことば -->
-
     <div
       id="wordResultsSection"
       class="results section"
     >
-
       <h2 class="section-title">
         🌱 ふつうのことば
       </h2>
-
-
       <div class="result-group">
-
         <h3>
           語頭
         </h3>
-
         <div
           id="wordStartResults"
         ></div>
-
       </div>
-
-
       <div class="result-group">
-
         <h3>
           語中
         </h3>
-
         <div
           id="wordMiddleResults"
         ></div>
-
       </div>
-
-
       <div class="result-group">
-
         <h3>
           語尾
         </h3>
-
         <div
           id="wordEndResults"
         ></div>
-
       </div>
-
     </div>
-
-
-
     <!-- ポケモン -->
-
     <div
       id="pokemonResultsSection"
       class="results section"
     >
-
       <h2 class="section-title">
         ⭐ ポケモン
       </h2>
-
-
       <div class="result-group">
-
         <h3>
           語頭
         </h3>
-
         <div
           id="pokemonStartResults"
         ></div>
-
       </div>
-
-
       <div class="result-group">
-
         <h3>
           語中
         </h3>
-
         <div
           id="pokemonMiddleResults"
         ></div>
-
       </div>
-
-
       <div class="result-group">
-
         <h3>
           語尾
         </h3>
-
         <div
           id="pokemonEndResults"
         ></div>
-
       </div>
-
     </div>
-
-
-
     <!-- モンハン -->
-
     <div
       id="monsterResultsSection"
       class="results section"
     >
-
       <h2 class="section-title">
         ⚔️ モンハン
       </h2>
-
-
       <div class="result-group">
-
         <h3>
           語頭
         </h3>
-
         <div
           id="monsterStartResults"
         ></div>
-
       </div>
-
-
       <div class="result-group">
-
         <h3>
           語中
         </h3>
-
         <div
           id="monsterMiddleResults"
         ></div>
-
       </div>
-
-
       <div class="result-group">
-
         <h3>
           語尾
         </h3>
-
         <div
           id="monsterEndResults"
         ></div>
-
       </div>
-
     </div>
-
-
   </div>
-
-
   <script src="script.js"></script>
-
 </body>
 </html>
