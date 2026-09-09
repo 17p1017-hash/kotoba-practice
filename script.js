@@ -19,6 +19,15 @@ const KUROMOJI_DIC_PATH =
 
 
 // ========================================================
+// 音声認識の漢字 → 読み フォールバック
+// ========================================================
+
+const SPEECH_READING_FALLBACKS = {
+  "朝": "あさ"
+};
+
+
+// ========================================================
 // HTML要素
 // ========================================================
 
@@ -819,9 +828,7 @@ function showWordResults(
 
     element.textContent =
       "なし";
-
-
-    return;
+        return;
 
   }
 
@@ -1866,8 +1873,6 @@ function showSuccess(
   );
 
 }
-
-
 // ========================================================
 // kuromoji.js 読み込み
 // ========================================================
@@ -2087,6 +2092,10 @@ async function convertJapaneseToReading(
     );
 
 
+  // ======================================================
+  // 漢字が含まれていない場合
+  // ======================================================
+
   if (
     !containsKanji(
       original
@@ -2099,6 +2108,40 @@ async function convertJapaneseToReading(
 
   }
 
+
+  // ======================================================
+  // 音声認識の漢字変換フォールバック
+  //
+  // 例:
+  // 「あさ」と発音
+  // ↓
+  // 音声認識が「朝」と返す
+  // ↓
+  // 「あさ」に戻して正解判定
+  //
+  // kuromoji の読み込みに失敗した場合でも
+  // この辞書に登録した単語は判定できます。
+  // ======================================================
+
+  if (
+    Object.prototype.hasOwnProperty.call(
+      SPEECH_READING_FALLBACKS,
+      original
+    )
+  ) {
+
+    return normalizeKana(
+      SPEECH_READING_FALLBACKS[
+        original
+      ]
+    );
+
+  }
+
+
+  // ======================================================
+  // kuromoji で漢字を読みへ変換
+  // ======================================================
 
   try {
 
@@ -2150,6 +2193,26 @@ async function convertJapaneseToReading(
       original,
       error
     );
+
+
+    // ====================================================
+    // kuromoji が失敗した場合の最終フォールバック
+    // ====================================================
+
+    if (
+      Object.prototype.hasOwnProperty.call(
+        SPEECH_READING_FALLBACKS,
+        original
+      )
+    ) {
+
+      return normalizeKana(
+        SPEECH_READING_FALLBACKS[
+          original
+        ]
+      );
+
+    }
 
 
     return normalizeKana(
