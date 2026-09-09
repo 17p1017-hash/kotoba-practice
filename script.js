@@ -771,3 +771,5 @@ function clearResults() {
   monsterStartResults.innerHTML = "";
   monsterMiddleResults.innerHTML = "";
   
+  monsterEndResults.innerHTML = "";
+}
