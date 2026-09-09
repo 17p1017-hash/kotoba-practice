@@ -1,26 +1,66 @@
+// ========================================================
+// ことば検索 + 発音チェック
+//
+// ・ふつうのことば
+// ・ポケモン
+// ・モンハン
+//
+// 音声認識結果が
+// 「あさ」→「朝」
+// 「くつ」→「靴」
+// のように漢字変換されても、
+// kuromoji.js で読みを取得して判定します。
+// ========================================================
+
+
 let words = [];
 let pokemon = [];
 let monsters = [];
 
 
-// ========================
+// ========================================================
+// kuromoji
+// ========================================================
+
+let kuromojiTokenizer = null;
+
+let kuromojiLoadingPromise = null;
+
+
+const KUROMOJI_SCRIPT_URL =
+  "https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/build/kuromoji.js";
+
+
+const KUROMOJI_DIC_PATH =
+  "https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/";
+
+
+// ========================================================
 // HTML取得
-// ========================
+// ========================================================
 
 const soundInput =
-  document.getElementById("soundInput");
+  document.getElementById(
+    "soundInput"
+  );
 
 
 const wordSearchButton =
-  document.getElementById("wordSearchButton");
+  document.getElementById(
+    "wordSearchButton"
+  );
 
 
 const pokemonSearchButton =
-  document.getElementById("pokemonSearchButton");
+  document.getElementById(
+    "pokemonSearchButton"
+  );
 
 
 const monsterSearchButton =
-  document.getElementById("monsterSearchButton");
+  document.getElementById(
+    "monsterSearchButton"
+  );
 
 
 
@@ -99,10 +139,30 @@ const monsterEndResults =
   );
 
 
+// ========================================================
+// 起動
+// ========================================================
 
-// ========================
+loadData();
+
+
+// kuromojiは先に読み込みを始めておく
+loadKuromoji()
+  .catch(
+    function (error) {
+
+      console.warn(
+        "kuromojiの事前読み込みに失敗:",
+        error
+      );
+
+    }
+  );
+
+
+// ========================================================
 // データ読み込み
-// ========================
+// ========================================================
 
 async function loadData() {
 
@@ -157,16 +217,95 @@ async function loadData() {
     }
 
 
-    words =
+    const rawWords =
       await wordsResponse.json();
 
 
-    pokemon =
+    const rawPokemon =
       await pokemonResponse.json();
 
 
-    monsters =
+    const rawMonsters =
       await monsterResponse.json();
+
+
+
+    // ----------------------------------------
+    // 普通のことば
+    //
+    // 現在の
+    // "あさ"
+    //
+    // という形式にも、
+    //
+    // {
+    //   "name": "朝",
+    //   "reading": "あさ"
+    // }
+    //
+    // という将来の形式にも対応
+    // ----------------------------------------
+
+    words =
+      rawWords.map(
+        function (item) {
+
+          return normalizeWordData(
+            item
+          );
+
+        }
+      );
+
+
+
+    // ----------------------------------------
+    // ポケモン
+    //
+    // 現在の
+    // "フシギダネ"
+    //
+    // 形式にも、
+    //
+    // {
+    //   "name": "フシギダネ",
+    //   "reading": "ふしぎだね"
+    // }
+    //
+    // にも対応
+    // ----------------------------------------
+
+    pokemon =
+      rawPokemon.map(
+        function (
+          item,
+          index
+        ) {
+
+          return normalizePokemonData(
+            item,
+            index
+          );
+
+        }
+      );
+
+
+
+    // ----------------------------------------
+    // モンハン
+    // ----------------------------------------
+
+    monsters =
+      rawMonsters.map(
+        function (item) {
+
+          return normalizeMonsterData(
+            item
+          );
+
+        }
+      );
 
 
     console.log(
@@ -189,7 +328,9 @@ async function loadData() {
 
   } catch (error) {
 
-    console.error(error);
+    console.error(
+      error
+    );
 
 
     alert(
@@ -201,16 +342,232 @@ async function loadData() {
 }
 
 
-loadData();
+// ========================================================
+// 普通のことばデータを統一
+// ========================================================
+
+function normalizeWordData(
+  item
+) {
+
+  // 今までの形式
+  //
+  // "あさ"
+
+  if (
+    typeof item === "string"
+  ) {
+
+    return {
+
+      name:
+        item,
+
+      reading:
+        normalizeKana(
+          item
+        ),
+
+      aliases:
+        []
+
+    };
+
+  }
 
 
+  // 新しい形式にも対応
 
-// ========================
-// ふつうのことば検索
-// ========================
+  const name =
+    item.name
+    ||
+    item.word
+    ||
+    item.label
+    ||
+    item.reading
+    ||
+    "";
+
+
+  const reading =
+    item.reading
+    ||
+    item.kana
+    ||
+    name;
+
+
+  return {
+
+    ...item,
+
+    name:
+      name,
+
+    reading:
+      normalizeKana(
+        reading
+      ),
+
+    aliases:
+      Array.isArray(
+        item.aliases
+      )
+        ?
+        item.aliases
+        :
+        []
+
+  };
+
+}
+
+
+// ========================================================
+// ポケモンデータを統一
+// ========================================================
+
+function normalizePokemonData(
+  item,
+  index
+) {
+
+  // 今までの形式
+  //
+  // "フシギダネ"
+
+  if (
+    typeof item === "string"
+  ) {
+
+    return {
+
+      name:
+        item,
+
+      reading:
+        normalizeKana(
+          item
+        ),
+
+      number:
+        index + 1,
+
+      aliases:
+        []
+
+    };
+
+  }
+
+
+  const name =
+    item.name
+    ||
+    item.word
+    ||
+    "";
+
+
+  const reading =
+    item.reading
+    ||
+    item.kana
+    ||
+    name;
+
+
+  return {
+
+    ...item,
+
+    name:
+      name,
+
+    reading:
+      normalizeKana(
+        reading
+      ),
+
+    number:
+      item.number
+      ||
+      item.id
+      ||
+      index + 1,
+
+    aliases:
+      Array.isArray(
+        item.aliases
+      )
+        ?
+        item.aliases
+        :
+        []
+
+  };
+
+}
+
+
+// ========================================================
+// モンハンデータを統一
+// ========================================================
+
+function normalizeMonsterData(
+  item
+) {
+
+  const name =
+    item.name
+    ||
+    item.word
+    ||
+    "";
+
+
+  const reading =
+    item.reading
+    ||
+    item.kana
+    ||
+    name;
+
+
+  return {
+
+    ...item,
+
+    name:
+      name,
+
+    reading:
+      normalizeKana(
+        reading
+      ),
+
+    aliases:
+      Array.isArray(
+        item.aliases
+      )
+        ?
+        item.aliases
+        :
+        []
+
+  };
+
+}
+
+
+// ========================================================
+// 普通のことば検索
+// ========================================================
 
 wordSearchButton.addEventListener(
   "click",
+
   function () {
 
     const sound =
@@ -218,7 +575,9 @@ wordSearchButton.addEventListener(
 
 
     if (!sound) {
+
       return;
+
     }
 
 
@@ -231,7 +590,7 @@ wordSearchButton.addEventListener(
 
 
     const results =
-      classifySimpleWords(
+      classifyItems(
         words,
         sound
       );
@@ -258,13 +617,13 @@ wordSearchButton.addEventListener(
 );
 
 
-
-// ========================
+// ========================================================
 // ポケモン検索
-// ========================
+// ========================================================
 
 pokemonSearchButton.addEventListener(
   "click",
+
   function () {
 
     const sound =
@@ -272,7 +631,9 @@ pokemonSearchButton.addEventListener(
 
 
     if (!sound) {
+
       return;
+
     }
 
 
@@ -284,32 +645,10 @@ pokemonSearchButton.addEventListener(
     );
 
 
-    const pokemonWithNumbers =
-      pokemon.map(
-        function (name, index) {
-
-          return {
-
-            name: name,
-
-            number:
-              index + 1
-
-          };
-
-        }
-      );
-
-
     const results =
-      classifyObjects(
-        pokemonWithNumbers,
-        sound,
-        function (item) {
-
-          return item.name;
-
-        }
+      classifyItems(
+        pokemon,
+        sound
       );
 
 
@@ -334,13 +673,13 @@ pokemonSearchButton.addEventListener(
 );
 
 
-
-// ========================
+// ========================================================
 // モンハン検索
-// ========================
+// ========================================================
 
 monsterSearchButton.addEventListener(
   "click",
+
   function () {
 
     const sound =
@@ -348,7 +687,9 @@ monsterSearchButton.addEventListener(
 
 
     if (!sound) {
+
       return;
+
     }
 
 
@@ -361,14 +702,9 @@ monsterSearchButton.addEventListener(
 
 
     const results =
-      classifyObjects(
+      classifyItems(
         monsters,
-        sound,
-        function (monster) {
-
-          return monster.reading;
-
-        }
+        sound
       );
 
 
@@ -393,10 +729,9 @@ monsterSearchButton.addEventListener(
 );
 
 
-
-// ========================
-// 入力された音
-// ========================
+// ========================================================
+// 検索する音
+// ========================================================
 
 function getSearchSound() {
 
@@ -404,7 +739,9 @@ function getSearchSound() {
     soundInput.value.trim();
 
 
-  if (rawSound === "") {
+  if (
+    rawSound === ""
+  ) {
 
     alert(
       "練習したい音を入力してください"
@@ -426,60 +763,13 @@ function getSearchSound() {
 }
 
 
+// ========================================================
+// 語頭・語中・語尾に分類
+// ========================================================
 
-// ========================
-// ふつうのことば分類
-// ========================
-
-function classifySimpleWords(
+function classifyItems(
   list,
   sound
-) {
-
-  const start = [];
-  const middle = [];
-  const end = [];
-
-
-  list.forEach(
-    function (word) {
-
-      const normalizedWord =
-        normalizeKana(word);
-
-
-      classifyOne(
-        word,
-        normalizedWord,
-        sound,
-        start,
-        middle,
-        end
-      );
-
-    }
-  );
-
-
-  return {
-    start,
-    middle,
-    end
-  };
-
-}
-
-
-
-// ========================
-// オブジェクト分類
-// ポケモン・モンハン共通
-// ========================
-
-function classifyObjects(
-  list,
-  sound,
-  getReading
 ) {
 
   const start = [];
@@ -492,17 +782,55 @@ function classifyObjects(
 
       const reading =
         normalizeKana(
-          getReading(item)
+          item.reading
         );
 
 
-      classifyOne(
-        item,
-        reading,
-        sound,
-        start,
-        middle,
-        end
+      if (
+        !reading.includes(
+          sound
+        )
+      ) {
+
+        return;
+
+      }
+
+
+      if (
+        reading.startsWith(
+          sound
+        )
+      ) {
+
+        start.push(
+          item
+        );
+
+
+        return;
+
+      }
+
+
+      if (
+        reading.endsWith(
+          sound
+        )
+      ) {
+
+        end.push(
+          item
+        );
+
+
+        return;
+
+      }
+
+
+      middle.push(
+        item
       );
 
     }
@@ -510,68 +838,24 @@ function classifyObjects(
 
 
   return {
-    start,
-    middle,
-    end
+
+    start:
+      start,
+
+    middle:
+      middle,
+
+    end:
+      end
+
   };
 
 }
 
 
-
-// ========================
-// 1件の分類
-// ========================
-
-function classifyOne(
-  item,
-  reading,
-  sound,
-  start,
-  middle,
-  end
-) {
-
-  if (
-    !reading.includes(sound)
-  ) {
-
-    return;
-
-  }
-
-
-  if (
-    reading.startsWith(sound)
-  ) {
-
-    start.push(item);
-
-    return;
-
-  }
-
-
-  if (
-    reading.endsWith(sound)
-  ) {
-
-    end.push(item);
-
-    return;
-
-  }
-
-
-  middle.push(item);
-
-}
-
-
-
-// ========================
+// ========================================================
 // 普通のことば表示
-// ========================
+// ========================================================
 
 function showWordResults(
   element,
@@ -592,12 +876,11 @@ function showWordResults(
 
 
   results.forEach(
-    function (word) {
+    function (wordData) {
 
       const item =
         createPracticeItem(
-          word,
-          word
+          wordData
         );
 
 
@@ -611,10 +894,9 @@ function showWordResults(
 }
 
 
-
-// ========================
+// ========================================================
 // ポケモン表示
-// ========================
+// ========================================================
 
 function showPokemonResults(
   element,
@@ -637,6 +919,22 @@ function showPokemonResults(
   results.forEach(
     function (pokemonData) {
 
+      const item =
+        document.createElement(
+          "div"
+        );
+
+
+      item.className =
+        "practice-item";
+
+
+      const link =
+        document.createElement(
+          "a"
+        );
+
+
       const numberText =
         String(
           pokemonData.number
@@ -646,14 +944,9 @@ function showPokemonResults(
         );
 
 
-      const link =
-        document.createElement(
-          "a"
-        );
-
-
       link.href =
-        "https://zukan.pokemon.co.jp/detail/" +
+        "https://zukan.pokemon.co.jp/detail/"
+        +
         numberText;
 
 
@@ -669,7 +962,6 @@ function showPokemonResults(
         "card-link";
 
 
-
       const card =
         document.createElement(
           "div"
@@ -680,7 +972,6 @@ function showPokemonResults(
         "result-card";
 
 
-
       const image =
         document.createElement(
           "img"
@@ -688,8 +979,10 @@ function showPokemonResults(
 
 
       image.src =
-        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/" +
-        pokemonData.number +
+        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/"
+        +
+        pokemonData.number
+        +
         ".png";
 
 
@@ -701,12 +994,10 @@ function showPokemonResults(
         "lazy";
 
 
-
       const text =
         document.createElement(
           "div"
         );
-
 
 
       const name =
@@ -723,7 +1014,6 @@ function showPokemonResults(
         pokemonData.name;
 
 
-
       const number =
         document.createElement(
           "div"
@@ -735,9 +1025,9 @@ function showPokemonResults(
 
 
       number.textContent =
-        "No." +
+        "No."
+        +
         numberText;
-
 
 
       const guide =
@@ -752,7 +1042,6 @@ function showPokemonResults(
 
       guide.textContent =
         "公式ポケモンずかんを見る →";
-
 
 
       text.appendChild(
@@ -785,29 +1074,15 @@ function showPokemonResults(
       );
 
 
-      const practice =
-        createPracticeControls(
-          pokemonData.name
-        );
-
-
-      const item =
-        document.createElement(
-          "div"
-        );
-
-
-      item.className =
-        "practice-item";
-
-
       item.appendChild(
         link
       );
 
 
       item.appendChild(
-        practice
+        createPracticeControls(
+          pokemonData
+        )
       );
 
 
@@ -821,10 +1096,9 @@ function showPokemonResults(
 }
 
 
-
-// ========================
+// ========================================================
 // モンハン表示
-// ========================
+// ========================================================
 
 function showMonsterResults(
   element,
@@ -845,7 +1119,17 @@ function showMonsterResults(
 
 
   results.forEach(
-    function (monster) {
+    function (monsterData) {
+
+      const item =
+        document.createElement(
+          "div"
+        );
+
+
+      item.className =
+        "practice-item";
+
 
       const link =
         document.createElement(
@@ -854,8 +1138,9 @@ function showMonsterResults(
 
 
       link.href =
-        "https://monsterhunternow.com/ja/monsters/" +
-        monster.slug;
+        "https://monsterhunternow.com/ja/monsters/"
+        +
+        monsterData.slug;
 
 
       link.target =
@@ -870,7 +1155,6 @@ function showMonsterResults(
         "card-link";
 
 
-
       const card =
         document.createElement(
           "div"
@@ -881,15 +1165,8 @@ function showMonsterResults(
         "result-card";
 
 
-
-      /*
-        monsterhunter.json に
-        image が入っている場合は
-        写真を表示します
-      */
-
       if (
-        monster.image
+        monsterData.image
       ) {
 
         const image =
@@ -899,11 +1176,11 @@ function showMonsterResults(
 
 
         image.src =
-          monster.image;
+          monsterData.image;
 
 
         image.alt =
-          monster.name;
+          monsterData.name;
 
 
         image.loading =
@@ -917,12 +1194,10 @@ function showMonsterResults(
       }
 
 
-
       const text =
         document.createElement(
           "div"
         );
-
 
 
       const name =
@@ -936,8 +1211,7 @@ function showMonsterResults(
 
 
       name.textContent =
-        monster.name;
-
+        monsterData.name;
 
 
       const guide =
@@ -952,7 +1226,6 @@ function showMonsterResults(
 
       guide.textContent =
         "Monster Hunter Now公式を見る →";
-
 
 
       text.appendChild(
@@ -975,29 +1248,15 @@ function showMonsterResults(
       );
 
 
-      const practice =
-        createPracticeControls(
-          monster.reading
-        );
-
-
-      const item =
-        document.createElement(
-          "div"
-        );
-
-
-      item.className =
-        "practice-item";
-
-
       item.appendChild(
         link
       );
 
 
       item.appendChild(
-        practice
+        createPracticeControls(
+          monsterData
+        )
       );
 
 
@@ -1011,14 +1270,12 @@ function showMonsterResults(
 }
 
 
-
-// ========================
-// 発音チェック
-// ========================
+// ========================================================
+// 普通のことば用カード
+// ========================================================
 
 function createPracticeItem(
-  label,
-  reading
+  wordData
 ) {
 
   const item =
@@ -1052,7 +1309,7 @@ function createPracticeItem(
 
 
   word.textContent =
-    label;
+    wordData.name;
 
 
   row.appendChild(
@@ -1067,7 +1324,7 @@ function createPracticeItem(
 
   item.appendChild(
     createPracticeControls(
-      reading,
+      wordData,
       row
     )
   );
@@ -1078,8 +1335,12 @@ function createPracticeItem(
 }
 
 
+// ========================================================
+// 発音ボタン
+// ========================================================
+
 function createPracticeControls(
-  reading,
+  itemData,
   buttonRow = null
 ) {
 
@@ -1119,10 +1380,11 @@ function createPracticeControls(
 
   button.addEventListener(
     "click",
+
     function () {
 
       startPronunciationCheck(
-        reading,
+        itemData,
         status,
         button
       );
@@ -1158,8 +1420,12 @@ function createPracticeControls(
 }
 
 
+// ========================================================
+// 音声認識開始
+// ========================================================
+
 function startPronunciationCheck(
-  targetReading,
+  targetData,
   statusElement,
   button
 ) {
@@ -1209,6 +1475,7 @@ function startPronunciationCheck(
     false;
 
 
+  // 複数候補を見る
   recognition.maxAlternatives =
     5;
 
@@ -1226,7 +1493,7 @@ function startPronunciationCheck(
 
 
   recognition.onresult =
-    function (event) {
+    async function (event) {
 
       const result =
         event.results[0];
@@ -1248,8 +1515,12 @@ function startPronunciationCheck(
       }
 
 
-      showPronunciationResult(
-        targetReading,
+      statusElement.textContent =
+        "判定しています…";
+
+
+      await showPronunciationResult(
+        targetData,
         alternatives,
         statusElement
       );
@@ -1315,6 +1586,11 @@ function startPronunciationCheck(
 
   } catch (error) {
 
+    console.error(
+      error
+    );
+
+
     button.disabled =
       false;
 
@@ -1336,8 +1612,12 @@ function startPronunciationCheck(
 }
 
 
-function showPronunciationResult(
-  targetReading,
+// ========================================================
+// 発音判定
+// ========================================================
+
+async function showPronunciationResult(
+  targetData,
   alternatives,
   statusElement
 ) {
@@ -1347,65 +1627,231 @@ function showPronunciationResult(
   );
 
 
-  const target =
+  const targetName =
     normalizeSpeechText(
-      targetReading
+      targetData.name
     );
 
 
-  const normalizedAlternatives =
-    alternatives.map(
-      function (text) {
-
-        return normalizeSpeechText(
-          text
-        );
-
-      }
+  const targetReading =
+    normalizeSpeechText(
+      targetData.reading
     );
 
 
-  const exactIndex =
-    normalizedAlternatives.findIndex(
-      function (text) {
+  // JSONにaliasesがあれば、それも正解候補にする
+  const targetAliases =
+    Array.isArray(
+      targetData.aliases
+    )
+      ?
+      targetData.aliases
+      :
+      [];
 
-        return text === target;
 
-      }
-    );
+  const acceptableTexts =
+    new Set();
 
 
-  if (
-    exactIndex !== -1
+  acceptableTexts.add(
+    targetName
+  );
+
+
+  acceptableTexts.add(
+    targetReading
+  );
+
+
+  targetAliases.forEach(
+    function (alias) {
+
+      acceptableTexts.add(
+        normalizeSpeechText(
+          alias
+        )
+      );
+
+    }
+  );
+
+
+  // ----------------------------------------
+  // 音声認識候補を全部調べる
+  // ----------------------------------------
+
+  const checkedResults = [];
+
+
+  for (
+    let i = 0;
+    i < alternatives.length;
+    i++
   ) {
 
-    statusElement.textContent =
-      "🎉 できた！「" +
-      alternatives[exactIndex] +
-      "」と聞こえました。";
+    const originalText =
+      alternatives[i];
 
 
-    statusElement.classList.add(
-      "success"
-    );
+    const normalizedText =
+      normalizeSpeechText(
+        originalText
+      );
 
 
-    return;
+    // 漢字を読みへ変換
+    const readingText =
+      await convertJapaneseToReading(
+        originalText
+      );
+
+
+    const normalizedReading =
+      normalizeSpeechText(
+        readingText
+      );
+
+
+    checkedResults.push({
+
+      original:
+        originalText,
+
+      normalized:
+        normalizedText,
+
+      reading:
+        normalizedReading
+
+    });
+
+
+    // ----------------------------------------
+    // そのまま一致
+    //
+    // 例:
+    // フシギダネ
+    // ----------------------------------------
+
+    if (
+      acceptableTexts.has(
+        normalizedText
+      )
+    ) {
+
+      showSuccess(
+        statusElement,
+        originalText,
+        normalizedReading
+      );
+
+
+      return;
+
+    }
+
+
+    // ----------------------------------------
+    // 読みで一致
+    //
+    // 例:
+    //
+    // 正解 あさ
+    // 認識 朝
+    //
+    // 朝 → アサ → あさ
+    // ----------------------------------------
+
+    if (
+      normalizedReading
+      ===
+      targetReading
+    ) {
+
+      showSuccess(
+        statusElement,
+        originalText,
+        normalizedReading
+      );
+
+
+      return;
+
+    }
+
+
+    // aliasesの読みとも比較
+    for (
+      const alias of targetAliases
+    ) {
+
+      const aliasReading =
+        await convertJapaneseToReading(
+          alias
+        );
+
+
+      if (
+        normalizeSpeechText(
+          aliasReading
+        )
+        ===
+        normalizedReading
+      ) {
+
+        showSuccess(
+          statusElement,
+          originalText,
+          normalizedReading
+        );
+
+
+        return;
+
+      }
+
+    }
 
   }
 
 
-  let bestIndex = 0;
-  let bestScore = 0;
+  // ======================================================
+  // 完全一致しなかった場合
+  // 一番近い読みを探す
+  // ======================================================
+
+  let bestResult =
+    null;
 
 
-  normalizedAlternatives.forEach(
-    function (text, index) {
+  let bestScore =
+    0;
+
+
+  checkedResults.forEach(
+    function (result) {
+
+      // 漢字表記そのものとの近さ
+      const nameScore =
+        similarityScore(
+          targetName,
+          result.normalized
+        );
+
+
+      // 読みとの近さ
+      const readingScore =
+        similarityScore(
+          targetReading,
+          result.reading
+        );
+
 
       const score =
-        similarityScore(
-          target,
-          text
+        Math.max(
+          nameScore,
+          readingScore
         );
 
 
@@ -1417,8 +1863,8 @@ function showPronunciationResult(
           score;
 
 
-        bestIndex =
-          index;
+        bestResult =
+          result;
 
       }
 
@@ -1426,13 +1872,21 @@ function showPronunciationResult(
   );
 
 
+  // ======================================================
+  // おしい
+  // ======================================================
+
   if (
+    bestResult
+    &&
     bestScore >= 0.65
   ) {
 
     statusElement.textContent =
-      "🙂 おしい！「" +
-      alternatives[bestIndex] +
+      "🙂 おしい！「"
+      +
+      bestResult.original
+      +
       "」と聞こえました。もう一回やってみよう。";
 
 
@@ -1446,10 +1900,31 @@ function showPronunciationResult(
   }
 
 
-  statusElement.textContent =
-    "🔁 「" +
-    alternatives[0] +
-    "」と聞こえました。もう一度ゆっくり言ってみよう。";
+  // ======================================================
+  // 不正解
+  // ======================================================
+
+  const firstResult =
+    checkedResults[0];
+
+
+  if (
+    firstResult
+  ) {
+
+    statusElement.textContent =
+      "🔁 「"
+      +
+      firstResult.original
+      +
+      "」と聞こえました。もう一度ゆっくり言ってみよう。";
+
+  } else {
+
+    statusElement.textContent =
+      "🔁 うまく聞き取れませんでした。もう一度やってみよう。";
+
+  }
 
 
   statusElement.classList.add(
@@ -1459,30 +1934,404 @@ function showPronunciationResult(
 }
 
 
-function resetPracticeStatus(
-  statusElement
+// ========================================================
+// 正解表示
+// ========================================================
+
+function showSuccess(
+  statusElement,
+  recognizedText,
+  reading
 ) {
 
-  statusElement.className =
-    "practice-status";
+  statusElement.textContent =
+    "🎉 できた！「"
+    +
+    recognizedText
+    +
+    "」と聞こえました。";
+
+
+  statusElement.classList.add(
+    "success"
+  );
+
+
+  console.log(
+    "音声認識:",
+    recognizedText,
+    "読み:",
+    reading
+  );
 
 }
 
+
+// ========================================================
+// kuromoji読み込み
+// ========================================================
+
+function loadKuromoji() {
+
+  // すでに準備済み
+
+  if (
+    kuromojiTokenizer
+  ) {
+
+    return Promise.resolve(
+      kuromojiTokenizer
+    );
+
+  }
+
+
+  // 読み込み中なら同じPromiseを返す
+
+  if (
+    kuromojiLoadingPromise
+  ) {
+
+    return kuromojiLoadingPromise;
+
+  }
+
+
+  kuromojiLoadingPromise =
+    new Promise(
+      function (
+        resolve,
+        reject
+      ) {
+
+        // ----------------------------------------
+        // kuromoji.js本体がまだない場合
+        // scriptタグを自動追加
+        // ----------------------------------------
+
+        if (
+          typeof window.kuromoji
+          ===
+          "undefined"
+        ) {
+
+          const script =
+            document.createElement(
+              "script"
+            );
+
+
+          script.src =
+            KUROMOJI_SCRIPT_URL;
+
+
+          script.async =
+            true;
+
+
+          script.onload =
+            function () {
+
+              buildKuromojiTokenizer(
+                resolve,
+                reject
+              );
+
+            };
+
+
+          script.onerror =
+            function () {
+
+              reject(
+                new Error(
+                  "kuromoji.jsを読み込めませんでした"
+                )
+              );
+
+            };
+
+
+          document.head.appendChild(
+            script
+          );
+
+
+          return;
+
+        }
+
+
+        // すでに読み込まれている場合
+
+        buildKuromojiTokenizer(
+          resolve,
+          reject
+        );
+
+      }
+    );
+
+
+  return kuromojiLoadingPromise;
+
+}
+
+
+// ========================================================
+// kuromoji tokenizer作成
+// ========================================================
+
+function buildKuromojiTokenizer(
+  resolve,
+  reject
+) {
+
+  if (
+    !window.kuromoji
+  ) {
+
+    reject(
+      new Error(
+        "kuromojiが見つかりません"
+      )
+    );
+
+
+    return;
+
+  }
+
+
+  window.kuromoji
+    .builder({
+
+      dicPath:
+        KUROMOJI_DIC_PATH
+
+    })
+    .build(
+      function (
+        error,
+        tokenizer
+      ) {
+
+        if (
+          error
+        ) {
+
+          console.error(
+            "kuromoji辞書エラー:",
+            error
+          );
+
+
+          reject(
+            error
+          );
+
+
+          return;
+
+        }
+
+
+        kuromojiTokenizer =
+          tokenizer;
+
+
+        console.log(
+          "kuromoji準備完了"
+        );
+
+
+        resolve(
+          tokenizer
+        );
+
+      }
+    );
+
+}
+
+
+// ========================================================
+// 漢字 → 読み
+// ========================================================
+
+async function convertJapaneseToReading(
+  text
+) {
+
+  const original =
+    String(
+      text
+    );
+
+
+  // すでにひらがな・カタカナだけなら
+  // kuromojiを使わずそのまま
+
+  if (
+    !containsKanji(
+      original
+    )
+  ) {
+
+    return normalizeKana(
+      original
+    );
+
+  }
+
+
+  try {
+
+    const tokenizer =
+      await loadKuromoji();
+
+
+    const tokens =
+      tokenizer.tokenize(
+        original
+      );
+
+
+    let reading = "";
+
+
+    tokens.forEach(
+      function (token) {
+
+        // 辞書に読みがある場合
+
+        if (
+          token.reading
+          &&
+          token.reading !== "*"
+        ) {
+
+          reading +=
+            token.reading;
+
+        } else {
+
+          // 未知語など
+          reading +=
+            token.surface_form;
+
+        }
+
+      }
+    );
+
+
+    return normalizeKana(
+      reading
+    );
+
+
+  } catch (error) {
+
+    console.warn(
+      "読み変換に失敗しました:",
+      original,
+      error
+    );
+
+
+    // 失敗した場合も
+    // 通常の音声判定は続ける
+
+    return normalizeKana(
+      original
+    );
+
+  }
+
+}
+
+
+// ========================================================
+// 漢字を含むか
+// ========================================================
+
+function containsKanji(
+  text
+) {
+
+  return /[\u3400-\u4DBF\u4E00-\u9FFF々〆ヵヶ]/.test(
+    String(
+      text
+    )
+  );
+
+}
+
+
+// ========================================================
+// 音声認識用の文字正規化
+// ========================================================
 
 function normalizeSpeechText(
   text
 ) {
 
   return normalizeKana(
-    String(text)
+    String(
+      text
+    )
       .replace(
-        /[、。,.!?！？「」『』（）()\-ー\s]/g,
+        /[、。,.!?！？「」『』（）()【】［］\[\]\-ー\s]/g,
         ""
       )
   );
 
 }
 
+
+// ========================================================
+// ひらがな・カタカナ統一
+// ========================================================
+
+function normalizeKana(
+  text
+) {
+
+  return String(
+    text
+  )
+
+    .normalize(
+      "NFKC"
+    )
+
+    .replace(
+      /[・\s]/g,
+      ""
+    )
+
+    .replace(
+      /[\u30a1-\u30f6]/g,
+
+      function (match) {
+
+        return String.fromCharCode(
+          match.charCodeAt(0)
+          -
+          0x60
+        );
+
+      }
+
+    );
+
+}
+
+
+// ========================================================
+// 文字列の近さ
+// ========================================================
 
 function similarityScore(
   left,
@@ -1528,6 +2377,10 @@ function similarityScore(
 }
 
 
+// ========================================================
+// レーベンシュタイン距離
+// ========================================================
+
 function levenshteinDistance(
   left,
   right
@@ -1543,12 +2396,18 @@ function levenshteinDistance(
 
   const matrix =
     Array.from(
-      { length: rows },
+      {
+        length:
+          rows
+      },
+
       function () {
 
         return new Array(
           columns
-        ).fill(0);
+        ).fill(
+          0
+        );
 
       }
     );
@@ -1591,16 +2450,30 @@ function levenshteinDistance(
     ) {
 
       const cost =
-        left[i - 1] === right[j - 1]
-        ? 0
-        : 1;
+        left[i - 1]
+        ===
+        right[j - 1]
+          ?
+          0
+          :
+          1;
 
 
       matrix[i][j] =
         Math.min(
-          matrix[i - 1][j] + 1,
-          matrix[i][j - 1] + 1,
-          matrix[i - 1][j - 1] + cost
+
+          matrix[i - 1][j]
+          +
+          1,
+
+          matrix[i][j - 1]
+          +
+          1,
+
+          matrix[i - 1][j - 1]
+          +
+          cost
+
         );
 
     }
@@ -1608,15 +2481,32 @@ function levenshteinDistance(
   }
 
 
-  return matrix[rows - 1][columns - 1];
+  return matrix[
+    rows - 1
+  ][
+    columns - 1
+  ];
 
 }
 
 
+// ========================================================
+// 発音結果表示をリセット
+// ========================================================
 
-// ========================
-// 表示するカテゴリ
-// ========================
+function resetPracticeStatus(
+  statusElement
+) {
+
+  statusElement.className =
+    "practice-status";
+
+}
+
+
+// ========================================================
+// 表示するカテゴリを切り替え
+// ========================================================
 
 function showOnlySection(
   section
@@ -1652,10 +2542,9 @@ function showOnlySection(
 }
 
 
-
-// ========================
-// 結果を消す
-// ========================
+// ========================================================
+// 検索結果を消す
+// ========================================================
 
 function clearResults() {
 
@@ -1693,43 +2582,5 @@ function clearResults() {
 
   monsterEndResults.innerHTML =
     "";
-
-}
-
-
-
-// ========================
-// ひらがな・カタカナ統一
-// ========================
-
-function normalizeKana(
-  text
-) {
-
-  return String(text)
-
-    .normalize(
-      "NFKC"
-    )
-
-    .replace(
-      /[・\s]/g,
-      ""
-    )
-
-    .replace(
-      /[\u30a1-\u30f6]/g,
-
-      function (match) {
-
-        return String.fromCharCode(
-          match.charCodeAt(0)
-          -
-          0x60
-        );
-
-      }
-
-    );
 
 }
