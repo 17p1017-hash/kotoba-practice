@@ -594,18 +594,15 @@ function showWordResults(
   results.forEach(
     function (word) {
 
-      const p =
-        document.createElement(
-          "p"
+      const item =
+        createPracticeItem(
+          word,
+          word
         );
 
 
-      p.textContent =
-        word;
-
-
       element.appendChild(
-        p
+        item
       );
 
     }
@@ -788,8 +785,34 @@ function showPokemonResults(
       );
 
 
-      element.appendChild(
+      const practice =
+        createPracticeControls(
+          pokemonData.name
+        );
+
+
+      const item =
+        document.createElement(
+          "div"
+        );
+
+
+      item.className =
+        "practice-item";
+
+
+      item.appendChild(
         link
+      );
+
+
+      item.appendChild(
+        practice
+      );
+
+
+      element.appendChild(
+        item
       );
 
     }
@@ -952,12 +975,640 @@ function showMonsterResults(
       );
 
 
-      element.appendChild(
+      const practice =
+        createPracticeControls(
+          monster.reading
+        );
+
+
+      const item =
+        document.createElement(
+          "div"
+        );
+
+
+      item.className =
+        "practice-item";
+
+
+      item.appendChild(
         link
+      );
+
+
+      item.appendChild(
+        practice
+      );
+
+
+      element.appendChild(
+        item
       );
 
     }
   );
+
+}
+
+
+
+// ========================
+// 発音チェック
+// ========================
+
+function createPracticeItem(
+  label,
+  reading
+) {
+
+  const item =
+    document.createElement(
+      "div"
+    );
+
+
+  item.className =
+    "practice-item";
+
+
+  const row =
+    document.createElement(
+      "div"
+    );
+
+
+  row.className =
+    "practice-row";
+
+
+  const word =
+    document.createElement(
+      "div"
+    );
+
+
+  word.className =
+    "practice-word";
+
+
+  word.textContent =
+    label;
+
+
+  row.appendChild(
+    word
+  );
+
+
+  item.appendChild(
+    row
+  );
+
+
+  item.appendChild(
+    createPracticeControls(
+      reading,
+      row
+    )
+  );
+
+
+  return item;
+
+}
+
+
+function createPracticeControls(
+  reading,
+  buttonRow = null
+) {
+
+  const wrapper =
+    document.createElement(
+      "div"
+    );
+
+
+  const button =
+    document.createElement(
+      "button"
+    );
+
+
+  button.type =
+    "button";
+
+
+  button.className =
+    "practice-button";
+
+
+  button.textContent =
+    "🎤 発音する";
+
+
+  const status =
+    document.createElement(
+      "div"
+    );
+
+
+  status.className =
+    "practice-status";
+
+
+  button.addEventListener(
+    "click",
+    function () {
+
+      startPronunciationCheck(
+        reading,
+        status,
+        button
+      );
+
+    }
+  );
+
+
+  if (
+    buttonRow
+  ) {
+
+    buttonRow.appendChild(
+      button
+    );
+
+  } else {
+
+    wrapper.appendChild(
+      button
+    );
+
+  }
+
+
+  wrapper.appendChild(
+    status
+  );
+
+
+  return wrapper;
+
+}
+
+
+function startPronunciationCheck(
+  targetReading,
+  statusElement,
+  button
+) {
+
+  const SpeechRecognition =
+    window.SpeechRecognition
+    ||
+    window.webkitSpeechRecognition;
+
+
+  resetPracticeStatus(
+    statusElement
+  );
+
+
+  if (
+    !SpeechRecognition
+  ) {
+
+    statusElement.textContent =
+      "このブラウザーでは音声認識を使えません。Chrome系ブラウザーで試してください。";
+
+
+    statusElement.classList.add(
+      "error"
+    );
+
+
+    return;
+
+  }
+
+
+  const recognition =
+    new SpeechRecognition();
+
+
+  recognition.lang =
+    "ja-JP";
+
+
+  recognition.continuous =
+    false;
+
+
+  recognition.interimResults =
+    false;
+
+
+  recognition.maxAlternatives =
+    5;
+
+
+  button.disabled =
+    true;
+
+
+  button.textContent =
+    "🎤 きいています…";
+
+
+  statusElement.textContent =
+    "ことばを1回、はっきり言ってみよう";
+
+
+  recognition.onresult =
+    function (event) {
+
+      const result =
+        event.results[0];
+
+
+      const alternatives = [];
+
+
+      for (
+        let i = 0;
+        i < result.length;
+        i++
+      ) {
+
+        alternatives.push(
+          result[i].transcript
+        );
+
+      }
+
+
+      showPronunciationResult(
+        targetReading,
+        alternatives,
+        statusElement
+      );
+
+    };
+
+
+  recognition.onerror =
+    function (event) {
+
+      resetPracticeStatus(
+        statusElement
+      );
+
+
+      if (
+        event.error === "not-allowed"
+        ||
+        event.error === "service-not-allowed"
+      ) {
+
+        statusElement.textContent =
+          "マイクの使用が許可されていません。ブラウザーの設定でマイクを許可してください。";
+
+      } else if (
+        event.error === "no-speech"
+      ) {
+
+        statusElement.textContent =
+          "声を聞き取れませんでした。もう一度やってみよう。";
+
+      } else {
+
+        statusElement.textContent =
+          "音声認識がうまく動きませんでした。もう一度試してください。";
+
+      }
+
+
+      statusElement.classList.add(
+        "error"
+      );
+
+    };
+
+
+  recognition.onend =
+    function () {
+
+      button.disabled =
+        false;
+
+
+      button.textContent =
+        "🎤 発音する";
+
+    };
+
+
+  try {
+
+    recognition.start();
+
+  } catch (error) {
+
+    button.disabled =
+      false;
+
+
+    button.textContent =
+      "🎤 発音する";
+
+
+    statusElement.textContent =
+      "音声認識を開始できませんでした。少し待ってからもう一度試してください。";
+
+
+    statusElement.classList.add(
+      "error"
+    );
+
+  }
+
+}
+
+
+function showPronunciationResult(
+  targetReading,
+  alternatives,
+  statusElement
+) {
+
+  resetPracticeStatus(
+    statusElement
+  );
+
+
+  const target =
+    normalizeSpeechText(
+      targetReading
+    );
+
+
+  const normalizedAlternatives =
+    alternatives.map(
+      function (text) {
+
+        return normalizeSpeechText(
+          text
+        );
+
+      }
+    );
+
+
+  const exactIndex =
+    normalizedAlternatives.findIndex(
+      function (text) {
+
+        return text === target;
+
+      }
+    );
+
+
+  if (
+    exactIndex !== -1
+  ) {
+
+    statusElement.textContent =
+      "🎉 できた！「" +
+      alternatives[exactIndex] +
+      "」と聞こえました。";
+
+
+    statusElement.classList.add(
+      "success"
+    );
+
+
+    return;
+
+  }
+
+
+  let bestIndex = 0;
+  let bestScore = 0;
+
+
+  normalizedAlternatives.forEach(
+    function (text, index) {
+
+      const score =
+        similarityScore(
+          target,
+          text
+        );
+
+
+      if (
+        score > bestScore
+      ) {
+
+        bestScore =
+          score;
+
+
+        bestIndex =
+          index;
+
+      }
+
+    }
+  );
+
+
+  if (
+    bestScore >= 0.65
+  ) {
+
+    statusElement.textContent =
+      "🙂 おしい！「" +
+      alternatives[bestIndex] +
+      "」と聞こえました。もう一回やってみよう。";
+
+
+    statusElement.classList.add(
+      "near"
+    );
+
+
+    return;
+
+  }
+
+
+  statusElement.textContent =
+    "🔁 「" +
+    alternatives[0] +
+    "」と聞こえました。もう一度ゆっくり言ってみよう。";
+
+
+  statusElement.classList.add(
+    "error"
+  );
+
+}
+
+
+function resetPracticeStatus(
+  statusElement
+) {
+
+  statusElement.className =
+    "practice-status";
+
+}
+
+
+function normalizeSpeechText(
+  text
+) {
+
+  return normalizeKana(
+    String(text)
+      .replace(
+        /[、。,.!?！？「」『』（）()\-ー\s]/g,
+        ""
+      )
+  );
+
+}
+
+
+function similarityScore(
+  left,
+  right
+) {
+
+  if (
+    left === right
+  ) {
+
+    return 1;
+
+  }
+
+
+  const maxLength =
+    Math.max(
+      left.length,
+      right.length
+    );
+
+
+  if (
+    maxLength === 0
+  ) {
+
+    return 1;
+
+  }
+
+
+  const distance =
+    levenshteinDistance(
+      left,
+      right
+    );
+
+
+  return 1 -
+    distance /
+    maxLength;
+
+}
+
+
+function levenshteinDistance(
+  left,
+  right
+) {
+
+  const rows =
+    left.length + 1;
+
+
+  const columns =
+    right.length + 1;
+
+
+  const matrix =
+    Array.from(
+      { length: rows },
+      function () {
+
+        return new Array(
+          columns
+        ).fill(0);
+
+      }
+    );
+
+
+  for (
+    let i = 0;
+    i < rows;
+    i++
+  ) {
+
+    matrix[i][0] =
+      i;
+
+  }
+
+
+  for (
+    let j = 0;
+    j < columns;
+    j++
+  ) {
+
+    matrix[0][j] =
+      j;
+
+  }
+
+
+  for (
+    let i = 1;
+    i < rows;
+    i++
+  ) {
+
+    for (
+      let j = 1;
+      j < columns;
+      j++
+    ) {
+
+      const cost =
+        left[i - 1] === right[j - 1]
+        ? 0
+        : 1;
+
+
+      matrix[i][j] =
+        Math.min(
+          matrix[i - 1][j] + 1,
+          matrix[i][j - 1] + 1,
+          matrix[i - 1][j - 1] + cost
+        );
+
+    }
+
+  }
+
+
+  return matrix[rows - 1][columns - 1];
 
 }
 
