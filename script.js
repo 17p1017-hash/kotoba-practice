@@ -31,8 +31,54 @@ const SPEECH_READING_FALLBACKS = {
 // HTML要素
 // ========================================================
 
-const soundInput =
-  document.getElementById("soundInput");
+// タップしたときに入力欄を選択する
+function focusSoundInput() {
+  if (document.activeElement !== soundInput) {
+    soundInput.focus();
+  }
+}
+
+soundInput.addEventListener("click", focusSoundInput);
+
+let inputTouchStart = null;
+
+soundInput.addEventListener("touchstart", (event) => {
+  const touch =
+    event.touches.length === 1
+      ? event.touches[0]
+      : null;
+
+  inputTouchStart = touch
+    ? { x: touch.clientX, y: touch.clientY }
+    : null;
+}, { passive: true });
+
+soundInput.addEventListener("touchend", (event) => {
+  const start = inputTouchStart;
+  inputTouchStart = null;
+
+  const touch = event.changedTouches[0];
+
+  if (!start || !touch || event.touches.length !== 0) {
+    return;
+  }
+
+  // スクロールしたときにはキーボードを開かない
+  const distance = Math.hypot(
+    touch.clientX - start.x,
+    touch.clientY - start.y
+  );
+
+  if (distance > 10) {
+    return;
+  }
+
+  focusSoundInput();
+}, { passive: true });
+
+soundInput.addEventListener("touchcancel", () => {
+  inputTouchStart = null;
+}, { passive: true });
 
 const wordSearchButton =
   document.getElementById("wordSearchButton");
