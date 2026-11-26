@@ -16,7 +16,8 @@ const KUROMOJI_DIC_PATH =
 // 音声認識の漢字 → 読み フォールバック
 // ========================================================
 const SPEECH_READING_FALLBACKS = {
-  "朝": "あさ"
+  "朝": "あさ",
+  "勝負": "しょうぶ"
 };
 // ========================================================
 // HTML要素
@@ -84,6 +85,8 @@ const monsterEndResults =
 // 起動
 // ========================================================
 loadData();
+// 辞書を事前読み込みし、初回の判定待ちを短縮する。
+loadKuromoji().catch(error => console.warn("読み辞書の準備に失敗:", error));
 // ========================================================
 // JSON読み込み
 // ========================================================
@@ -1083,10 +1086,19 @@ async function showPronunciationResult(
     await convertJapaneseToReading(
       originalText
     );
+  // 音声認識は漢字を返すことがあるため、比較前に読みを確定する。
+  // お題の表記と完全一致する場合は、辞書の多義読みよりお題の読みを優先。
   const normalizedReading =
-    normalizeSpeechText(
-      convertedReading
-    );
+    normalizedText === targetName && targetReading && !containsKanji(targetReading)
+      ? targetReading
+      : normalizeSpeechText(convertedReading);
+  // 辞書にない漢字を無理に不正解扱いしない。
+  if (containsKanji(normalizedReading)) {
+    statusElement.textContent =
+      `🎤「${originalText}」と聞こえましたが、漢字の読みを確認できませんでした。もう一度試してください。`;
+    statusElement.classList.add("near");
+    return;
+  }
   console.log(
     "最有力の音声認識結果:",
     originalText
@@ -1387,10 +1399,7 @@ async function convertJapaneseToReading(
   text
 ) {
   const original =
-    String(
-      text ||
-      ""
-    );
+    String(text || "").trim();
   if (
     !containsKanji(
       original
