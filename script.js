@@ -9,16 +9,271 @@ let monsters = [];
 let kuromojiTokenizer = null;
 let kuromojiLoadingPromise = null;
 const KUROMOJI_SCRIPT_URL =
-  "https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/build/kuromoji.js";
+  "./vendor/kuromoji/kuromoji.js";
 const KUROMOJI_DIC_PATH =
-  "https://cdn.jsdelivr.net/npm/kuromoji@0.1.2/dict/";
+  "./vendor/kuromoji/dict/";
 // ========================================================
 // 音声認識の漢字 → 読み フォールバック
 // ========================================================
 const SPEECH_READING_FALLBACKS = {
+  "雨": "あめ",
+  "飴": "あめ",
+  "蟻": "あり",
   "朝": "あさ",
-  "勝負": "しょうぶ"
+  "赤": "あか",
+  "犬": "いぬ",
+  "椅子": "いす",
+  "苺": "いちご",
+  "家": "いえ",
+  "糸": "いと",
+  "海豚": "いるか",
+  "兎": "うさぎ",
+  "海": "うみ",
+  "牛": "うし",
+  "腕": "うで",
+  "歌": "うた",
+  "唄": "うた",
+  "饂飩": "うどん",
+  "鉛筆": "えんぴつ",
+  "絵本": "えほん",
+  "駅": "えき",
+  "枝": "えだ",
+  "海老": "えび",
+  "蝦": "えび",
+  "お握り": "おにぎり",
+  "お菓子": "おかし",
+  "お茶": "おちゃ",
+  "鬼": "おに",
+  "お皿": "おさら",
+  "お金": "おかね",
+  "傘": "かさ",
+  "笠": "かさ",
+  "亀": "かめ",
+  "鞄": "かばん",
+  "蟹": "かに",
+  "顔": "かお",
+  "狐": "きつね",
+  "麒麟": "きりん",
+  "茸": "きのこ",
+  "汽車": "きしゃ",
+  "記者": "きしゃ",
+  "胡瓜": "きゅうり",
+  "靴": "くつ",
+  "熊": "くま",
+  "車": "くるま",
+  "鯨": "くじら",
+  "栗": "くり",
+  "海月": "くらげ",
+  "煙": "けむり",
+  "消しゴム": "けしごむ",
+  "消しごむ": "けしごむ",
+  "剣玉": "けんだま",
+  "けん玉": "けんだま",
+  "独楽": "こま",
+  "子犬": "こいぬ",
+  "小犬": "こいぬ",
+  "氷": "こおり",
+  "小鳥": "ことり",
+  "声": "こえ",
+  "魚": "さかな",
+  "猿": "さる",
+  "皿": "さら",
+  "桜": "さくら",
+  "砂糖": "さとう",
+  "佐藤": "さとう",
+  "鹿": "しか",
+  "塩": "しお",
+  "白": "しろ",
+  "城": "しろ",
+  "島": "しま",
+  "縞": "しま",
+  "信号": "しんごう",
+  "西瓜": "すいか",
+  "寿司": "すし",
+  "鮨": "すし",
+  "砂": "すな",
+  "雀": "すずめ",
+  "滑り台": "すべりだい",
+  "すべり台": "すべりだい",
+  "蝉": "せみ",
+  "先生": "せんせい",
+  "背中": "せなか",
+  "石鹸": "せっけん",
+  "石けん": "せっけん",
+  "空": "そら",
+  "掃除": "そうじ",
+  "蕎麦": "そば",
+  "橇": "そり",
+  "蛸": "たこ",
+  "凧": "たこ",
+  "太鼓": "たいこ",
+  "卵": "たまご",
+  "玉子": "たまご",
+  "狸": "たぬき",
+  "太陽": "たいよう",
+  "地図": "ちず",
+  "地下鉄": "ちかてつ",
+  "蝶々": "ちょうちょ",
+  "蝶蝶": "ちょうちょ",
+  "竹輪": "ちくわ",
+  "月": "つき",
+  "机": "つくえ",
+  "積み木": "つみき",
+  "積木": "つみき",
+  "燕": "つばめ",
+  "釣り": "つり",
+  "手": "て",
+  "手紙": "てがみ",
+  "手袋": "てぶくろ",
+  "天道虫": "てんとうむし",
+  "てんとう虫": "てんとうむし",
+  "時計": "とけい",
+  "鳥": "とり",
+  "トマト": "とまと",
+  "虎": "とら",
+  "豆腐": "とうふ",
+  "茄子": "なす",
+  "縄": "なわ",
+  "波": "なみ",
+  "鍋": "なべ",
+  "鶏": "にわとり",
+  "虹": "にじ",
+  "肉": "にく",
+  "人参": "にんじん",
+  "布": "ぬの",
+  "塗り絵": "ぬりえ",
+  "ぬり絵": "ぬりえ",
+  "縫いぐるみ": "ぬいぐるみ",
+  "猫": "ねこ",
+  "鼠": "ねずみ",
+  "葱": "ねぎ",
+  "粘土": "ねんど",
+  "海苔": "のり",
+  "糊": "のり",
+  "飲み物": "のみもの",
+  "飲物": "のみもの",
+  "野原": "のはら",
+  "鋏": "はさみ",
+  "花": "はな",
+  "鼻": "はな",
+  "橋": "はし",
+  "箸": "はし",
+  "箱": "はこ",
+  "葉っぱ": "はっぱ",
+  "飛行機": "ひこうき",
+  "羊": "ひつじ",
+  "向日葵": "ひまわり",
+  "紐": "ひも",
+  "船": "ふね",
+  "舟": "ふね",
+  "風船": "ふうせん",
+  "服": "ふく",
+  "福": "ふく",
+  "筆": "ふで",
+  "布団": "ふとん",
+  "蛇": "へび",
+  "部屋": "へや",
+  "星": "ほし",
+  "本": "ほん",
+  "箒": "ほうき",
+  "蛍": "ほたる",
+  "豆": "まめ",
+  "枕": "まくら",
+  "窓": "まど",
+  "祭り": "まつり",
+  "蜜柑": "みかん",
+  "水": "みず",
+  "耳": "みみ",
+  "味噌": "みそ",
+  "虫": "むし",
+  "麦": "むぎ",
+  "結び": "むすび",
+  "村": "むら",
+  "眼鏡": "めがね",
+  "目高": "めだか",
+  "麺": "めん",
+  "餅": "もち",
+  "桃": "もも",
+  "森": "もり",
+  "物差し": "ものさし",
+  "物差": "ものさし",
+  "山": "やま",
+  "野菜": "やさい",
+  "山羊": "やぎ",
+  "薬缶": "やかん",
+  "雪": "ゆき",
+  "指": "ゆび",
+  "床": "ゆか",
+  "夢": "ゆめ",
+  "夜": "よる",
+  "洋服": "ようふく",
+  "横": "よこ",
+  "駱駝": "らくだ",
+  "拉麺": "らーめん",
+  "栗鼠": "りす",
+  "林檎": "りんご",
+  "留守番": "るすばん",
+  "冷蔵庫": "れいぞうこ",
+  "蝋燭": "ろうそく",
+  "ろう燭": "ろうそく",
+  "鰐": "わに",
+  "綿": "わた",
+  "輪ゴム": "わごむ",
+  "輪ごむ": "わごむ",
+  "輪投げ": "わなげ",
+  "勝負": "しょうぶ",
+  "菖蒲": "しょうぶ"
 };
+const LOCAL_READINGS = new Map(Object.entries(SPEECH_READING_FALLBACKS).map(([key, value]) => [normalizeSpeechText(key), value]));
+// 部分的な漢字変換にも対応。読みが確認できる部分だけを照合する。
+const EXTRA_PART_READINGS = {
+  "亀": ["がめ"], "種": ["たね", "だね"], "花": ["はな", "ばな"],
+  "蜥蜴": ["とかげ"], "影": ["かげ"], "銭": ["ぜに"],
+  "鳥": ["とり", "どり"], "虫": ["むし"], "竜": ["りゅう"],
+  "龍": ["りゅう"], "丸": ["まる"], "炎": ["ほのお", "えん"],
+  "雷": ["かみなり", "らい"], "氷": ["こおり", "ひょう"],
+  "岩": ["いわ", "がん"], "草": ["くさ", "ぐさ", "そう"],
+  "水": ["みず", "すい"], "火": ["ひ", "か"], "牙": ["きば", "が"],
+  "角": ["つの", "かく"], "尾": ["お", "び"], "山": ["やま", "さん"],
+  "熊": ["くま", "ぐま"], "狐": ["きつね", "ぎつね"], "猿": ["さる", "ざる"],
+  "蛇": ["へび", "じゃ"], "魚": ["さかな", "うお", "ぎょ"],
+  "貝": ["かい", "がい"], "蟹": ["かに", "がに"], "蜂": ["はち", "ばち"],
+  "猫": ["ねこ"], "犬": ["いぬ"], "雪": ["ゆき", "せつ"], "月": ["つき", "げつ"],
+  "星": ["ほし", "ぼし", "せい"], "鬼": ["おに", "き"], "王": ["おう"],
+  "剣": ["けん", "つるぎ"], "盾": ["たて"], "玉": ["たま", "だま"],
+  "風": ["かぜ", "ふう"], "空": ["そら", "くう"], "音": ["おと", "おん"],
+  "石": ["いし", "せき"], "毒": ["どく"], "夢": ["ゆめ"], "森": ["もり"],
+  "骨": ["ほね", "ぼね"], "金": ["きん", "かね", "がね"], "銀": ["ぎん"],
+  "黒": ["くろ", "ぐろ"], "白": ["しろ", "じろ"], "赤": ["あか"], "青": ["あお"]
+};
+const PART_READINGS = new Map();
+for (const [surface, readings] of [...LOCAL_READINGS].map(([k,v]) => [k,[v]]).concat(Object.entries(EXTRA_PART_READINGS))) {
+  const key = normalizeSpeechText(surface);
+  if (!containsKanji(key)) continue;
+  const values = PART_READINGS.get(key) || new Set();
+  for (const r of readings) values.add(normalizeSpeechText(r));
+  PART_READINGS.set(key, values);
+}
+function matchesPartialReading(surface, target) {
+  if (!containsKanji(surface) || !target || containsKanji(target)) return false;
+  const memo = new Map();
+  function visit(i,j) {
+    if (i === surface.length) return j === target.length;
+    if (j >= target.length) return false;
+    const key = i + ':' + j;
+    if (memo.has(key)) return memo.get(key);
+    let ok = !containsKanji(surface[i]) && surface[i] === target[j] && visit(i+1,j+1);
+    if (!ok) for (const [part, readings] of PART_READINGS) {
+      if (!surface.startsWith(part,i)) continue;
+      for (const r of readings) if (target.startsWith(r,j) && visit(i+part.length,j+r.length)) { ok = true; break; }
+      if (ok) break;
+    }
+    memo.set(key,ok);
+    return ok;
+  }
+  return visit(0,0);
+}
+
 // ========================================================
 // HTML要素
 // ========================================================
@@ -1082,6 +1337,16 @@ async function showPronunciationResult(
     normalizeSpeechText(
       originalText
     );
+  if (acceptableDirect.has(normalizedText)) {
+    showSuccess(statusElement, originalText, targetReading);
+    return;
+  }
+  for (const candidate of acceptableDirect) {
+    if (matchesPartialReading(normalizedText, candidate)) {
+      showSuccess(statusElement, originalText, candidate);
+      return;
+    }
+  }
   const convertedReading =
     await convertJapaneseToReading(
       originalText
@@ -1399,7 +1664,7 @@ async function convertJapaneseToReading(
   text
 ) {
   const original =
-    String(text || "").trim();
+    normalizeSpeechText(text);
   if (
     !containsKanji(
       original
@@ -1409,16 +1674,9 @@ async function convertJapaneseToReading(
       original
     );
   }
-  if (
-    Object.prototype.hasOwnProperty.call(
-      SPEECH_READING_FALLBACKS,
-      original
-    )
-  ) {
+  if (LOCAL_READINGS.has(original)) {
     return normalizeKana(
-      SPEECH_READING_FALLBACKS[
-        original
-      ]
+      LOCAL_READINGS.get(original)
     );
   }
   try {
