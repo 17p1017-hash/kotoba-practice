@@ -1,1 +1,25 @@
-
+name: Install local reading dictionary
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Fetch pinned dictionary
+        run: |
+          npm pack kuromoji@0.1.2 --pack-destination /tmp
+          tar -xzf /tmp/kuromoji-0.1.2.tgz -C /tmp
+          mkdir -p vendor/kuromoji
+          cp /tmp/package/build/kuromoji.js vendor/kuromoji/
+          cp -r /tmp/package/dict vendor/kuromoji/
+          cp /tmp/package/LICENSE* vendor/kuromoji/
+          git add vendor/kuromoji
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          if ! git diff --cached --quiet; then git commit -m 'Install local kuromoji dictionary'; git push; fi
